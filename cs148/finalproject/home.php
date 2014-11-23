@@ -3,43 +3,40 @@ include 'top.php';
 ?>
 <div id="wrapper">
     <div id="sidebar-wrapper">
-        <!-- div with navigable logo -->
-        <div id="topLeft">
-            <?php
-            // Put an image here for a logo
-            ?>
-        </div>
         <!-- the div below will go below the logo and contain site navigation -->
-        <div id="leftSide">
             <?php
             include 'nav.php';
             ?>
-        </div>
-    </div>
 
+    </div>
+    <!-- Page Content -->
     <div id="page-content-wrapper">
-        <!-- the div below will float to the left of the topOfPage -->
-        <div id="container-fluid">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <?php
-                    include 'header.php'
-                    ?>
+                    <h1>Simple Sidebar</h1>
+                    <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
+                    <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
                 </div>
             </div>
-
         </div>
-
-    
-    
-    <div id="bottom">
-        <!-- in case you want to put something on the bottom -->
-        <?php
-        include 'footer.php';
-        ?>
     </div>
-    </div>    
-</div>
+        <!-- /#page-content-wrapper -->
+    
+    
+<!--    <div id="bottom">
+         in case you want to put something on the bottom 
+        <?php
+       // include 'footer.php';
+        ?>
+    </div>-->
+</div>    
+
+    <?php
+    include 'jquery.php';
+    ?>
+
 
     </body>
 </html>
