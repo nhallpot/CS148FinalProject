@@ -12,8 +12,11 @@
         <script src="//html5shim.googlecode.com/sin/trunk/html5.js"></script>
         <![endif]-->
 
-        <link rel="stylesheet" href="style.css" type="text/css" media="screen">
-        <style type="text/css">
+        <link rel="stylesheet" href="bootstrap.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="simple-sidebar.css" type="text/css" media="screen">
+
+<!--        <style type="text/css">
 
             table{
                 border: medium #000080 solid;
@@ -35,7 +38,7 @@
             tr:nth-child(odd){
                 background-color: whitesmoke;
             }
-        </style>
+        </style>-->
         <?php
         $debug = false;
 

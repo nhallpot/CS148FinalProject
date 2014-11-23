@@ -1,4 +1,4 @@
 <!-- ######################     Page header   ############################## -->
 <header>
-    <h1>Spring Semester Course Lookup</h1>
+    <h1>Inventory Count</h1>
 </header>

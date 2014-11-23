@@ -1,12 +1,12 @@
 <?php
 include 'top.php';
 ?>
-<div id="container">
-    <div id="leftColumn">
+<div id="wrapper">
+    <div id="sidebar-wrapper">
         <!-- div with navigable logo -->
         <div id="topLeft">
             <?php
-            include 'logoWithLink.php';
+            // Put an image here for a logo
             ?>
         </div>
         <!-- the div below will go below the logo and contain site navigation -->

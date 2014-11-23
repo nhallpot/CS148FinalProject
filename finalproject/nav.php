@@ -1,6 +1,6 @@
 <!-- ######################     Main Navigation   ########################## -->
 <nav class="navigation">
-            <ul>
+    <ul class="sidebar-brand">
             <?php
             if ($path_parts['filename'] == "home") {
                 print"\t" . '<li class="activePage">Home</li>' . "\n";
