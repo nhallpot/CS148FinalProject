@@ -20,7 +20,7 @@ include 'top.php';
 //
 // SECTION: 1a.
 // variables for the classroom purposes to help find errors.
-$debug = false;
+$debug = true;
 if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
     $debug = false;
 }
@@ -41,8 +41,9 @@ $yourURL = $domain . $phpSelf;
 //
 // Initialize variables one for each form element
 // in the order they appear on the form
-$email = "nhallpot@uvm.edu";
-$screenName = "";
+$ItemName = "";
+$TotalOnHand = "";
+$Department ="";
 
 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
 //
@@ -50,8 +51,9 @@ $screenName = "";
 //
 // Initialize Error Flags one for each form element we validate
 // in the order they appear in section 1c.
-$emailERROR = false;
-$screenNameError = false;
+$ItemNameError = false;
+$TotalOnHandError = false;
+$DepartmentError = false;
 
 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
 //
@@ -89,9 +91,10 @@ if (isset($_POST["btnSubmit"])) {
 // SECTION: 2b Sanitize (clean) data
 // remove any potential JavaScript or html code from users input on the
 // form. Note it is best to follow the same order as declared in section 1c.
-    $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
-    $screenName = filter_var($_POST["txtScreenName"],FILTER_SANITIZE_TEXT);
-
+    $ItemName = filter_var($_POST["txtItemName"], FILTER_SANITIZE_TEXT);
+    $TotalOnHand = filter_var($_POST["txtTotalOnHand"],FILTER_SANITIZE_TEXT);
+    $Department = filter_var($_POST["txtDepartment"],FILTER_SANITIZE_TEXT);
+    
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //
 // SECTION: 2c Validation
@@ -104,17 +107,17 @@ if (isset($_POST["btnSubmit"])) {
 // see section 3b. The error flag ($emailERROR) will be used in section 3c.
 
 
-    if ($email == "") {
-        $errorMsg[] = "Please enter your email address";
-        $emailERROR = true;
-    } elseif (!verifyEmail($email)) {
-        $errorMsg[] = "Your email address appears to be incorrect.";
-        $emailERROR = true;
+    if ($ItemName == "") {
+        $errorMsg[] = "Please enter an Item Name";
+        $ItemNameError = true;
     }
-
-    if ($screenName ==""){
-        $errorMsg[] = "Please enter a username";
-        $screenNameError = true;
+    if ($TotalOnHand ==""){
+        $errorMsg[] = "Please enter a total number of units on hand";
+        $TotalOnHandError = true;
+    }
+    if ($Department ==""){
+        $errorMsg[] = "Please enter a department for the item";
+        $DepartmentError = true;
     }
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -142,9 +145,9 @@ if (isset($_POST["btnSubmit"])) {
             $dbName = strtoupper(get_current_user()) . '_Final_Project';
             $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
             $thisDatabase->db->beginTransaction();
-            $query = 'INSERT INTO tblItem (fldItemName,fldTotalOnHand,fldDepartment) values ("'.$email.','.$screenName.'")';
+            $query = 'INSERT INTO tblItem (fldItemName,fldTotalOnHand,fldDepartment) values ("'.$ItemName.','.$TotalOnHand.','.$Department.'")';
 
-            $data = array($email,$screenName);
+            $data = array($ItemName,$TotalOnHand,$Department);
             if ($debug) {
                 print "<p>sql " . $query;
                 print"<p><pre>";
@@ -289,19 +292,28 @@ if (isset($_POST["btnSubmit"])) {
                     <fieldset class="contact">
                         <legend>Contact Information</legend>
 
-                        <label for="txtScreenName" class="required">Screen Name
-                        <input type="text" id="txtScreenName" name="txtScreenName"
-                               value="<?php print $screenName; ?>"
-                               tabindex="118" maxlength="45" placeholder="Enter a screen name"
-                               <?php if ($screenNameError) print 'class="mistake"'; ?>
+                        <label for="txtItemName" class="required">Item Name
+                        <input type="text" id="txtItemName" name="txtItemName"
+                               value="<?php print $ItemName; ?>"
+                               tabindex="118" maxlength="45" placeholder="Enter an Item Name"
+                               <?php if ($ItemNameError) print 'class="mistake"'; ?>
                                onfocus="this.select()"
                                >
                         </label>
-                        <label for="txtEmail" class="required">Email
-                            <input type="text" id="txtEmail" name="txtEmail"
-                                   value="<?php print $email; ?>"
-                                   tabindex="120" maxlength="45" placeholder="Enter a valid email address"
-                                   <?php if ($emailERROR) print 'class="mistake"'; ?>
+                        <label for="txtTotalOnHand">Total on Hand
+                            <input type="text" id="txtTotalOnHand" name="txtTotalOnHand"
+                                   value="<?php print $TotalOnHand; ?>"
+                                   tabindex="120" maxlength="3" placeholder="Enter the total of number of units on hand"
+                                   <?php if ($TotalOnHandError) print 'class="mistake"'; ?>
+                                   onfocus="this.select()"
+                                   >
+                        </label>
+                        
+                        <label for="txtDepartment">Department
+                            <input type="text" id="txtDepartment" name="txtDepartment"
+                                   value="<?php print $Department; ?>"
+                                   tabindex="120" maxlength="45" placeholder="Enter the department the item belongs to"
+                                   <?php if ($DepartmentError) print 'class="mistake"'; ?>
                                    onfocus="this.select()"
                                    >
                         </label>
