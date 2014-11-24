@@ -134,14 +134,15 @@ if (isset($_POST["btnSubmit"])) {
         $dataEntered = false;
 
         try {
+            // Connect to the database
             require_once('../bin/myDatabase.php');
 
             $dbUserName = get_current_user() . '_writer';
             $whichPass = "w"; //flag for which one to use.
-            $dbName = strtoupper(get_current_user()) . '_UVM_Courses';
+            $dbName = strtoupper(get_current_user()) . '_Final_Project';
             $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
             $thisDatabase->db->beginTransaction();
-            $query = 'INSERT INTO tblRegister (fldEmail,fldScreenName) values ("'.$email.','.$screenName.'")';
+            $query = 'INSERT INTO tblItem (fldItemName,fldTotalOnHand,fldDepartment) values ("'.$email.','.$screenName.'")';
 
             $data = array($email,$screenName);
             if ($debug) {
