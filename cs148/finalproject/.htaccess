@@ -1,0 +1,6 @@
+<Files admin.php>
+AuthType WebAuth
+require user kzieba || nhallpot
+satisfy any
+order allow,deny
+</Files>

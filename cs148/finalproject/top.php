@@ -78,7 +78,7 @@
 
         require_once('lib/security.php');
 
-        if ($path_parts['filename'] == "crud"||$path_parts['filename'] == "confirmation"||$path_parts['filename'] == "approve") {
+        if ($path_parts['filename'] == "month"||$path_parts['filename'] == "year"||$path_parts['filename'] == "admin"||$path_parts['filename'] == "contact") {
             include "lib/validation-functions.php";
             include "lib/mail-message.php";
         }

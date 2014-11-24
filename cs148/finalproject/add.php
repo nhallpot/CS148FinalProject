@@ -281,9 +281,9 @@ if (isset($_POST["btnSubmit"])) {
               method="post"
               id="frmRegister">
             <fieldset class="wrapper">
-                <legend>Register Today</legend>
-                <p>You will find Peace ...</p>
-                <fieldset class="wrapperTwo">
+<!--                <legend>Register Today</legend>
+                <p></p>
+                <fieldset class="wrapperTwo">-->
                     <legend>Please complete the following form</legend>
                     <fieldset class="contact">
                         <legend>Contact Information</legend>
