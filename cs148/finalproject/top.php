@@ -4,7 +4,7 @@
         <title>Assignment 6.0</title>
         <meta charset="utf-8">
         <meta name="author" content="Noah Hall-Potvin">
-        <meta name="description" content="A website to search the spring semester course listing">
+        <meta name="description" content="A php app that performs inventory counts">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 

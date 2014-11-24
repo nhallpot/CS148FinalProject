@@ -297,7 +297,7 @@ if (isset($_POST["btnSubmit"])) {
         ?>
         <form action="<?php print $phpSelf; ?>"
               method="post"
-              id="frmRegister">
+              id="frmAdd">
             <fieldset class="wrapper">
                 <legend>Register Today</legend>
                 <p>You will find Peace ...</p>
