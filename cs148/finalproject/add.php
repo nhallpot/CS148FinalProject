@@ -14,13 +14,46 @@ include 'top.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Add an Inventory Item Here:</h1>
                 <?php
+                /* the purpose of this page is to display a form to allow a person to register
+                 * the form will be sticky meaning if there is a mistake the data previously 
+                 * entered will be displayed again. Once a form is submitted (to this same page)
+                 * we first sanitize our data by replacing html codes with the html character.
+                 * then we check to see if the data is valid. if data is valid enter the data 
+                 * into the table and we send and dispplay a confirmation email message. 
+                 * 
+                 * if the data is incorrect we flag the errors.
+                 * 
+                 * Written By: Robert Erickson robert.erickson@uvm.edu
+                 * Last updated on: October 17, 2014
+                 * 
+                 * 
+                  -- --------------------------------------------------------
+                  --
+                  -- Table structure for table `tblRegister`
+                  --
+
+                  CREATE TABLE IF NOT EXISTS `tblRegister` (
+                  `pmkRegisterId` int(11) NOT NULL AUTO_INCREMENT,
+                  `fldEmail` varchar(65) DEFAULT NULL,
+                  `fldDateJoined` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  `fldConfirmed` tinyint(1) NOT NULL DEFAULT '0',
+                  `fldApproved` tinyint(4) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`pmkRegisterId`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+                 * I am using a surrogate key for demonstration, 
+                 * email would make a good primary key as well which would prevent someone
+                 * from entering an email address in more than one record.
+                 */
+
+                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
+                //
                 // SECTION: 1 Initialize variables
                 //
                 // SECTION: 1a.
                 // variables for the classroom purposes to help find errors.
-                $debug = true;
+                $debug = false;
                 if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
                     $debug = false;
                 }
@@ -41,10 +74,10 @@ include 'top.php';
                 //
                 // Initialize variables one for each form element
                 // in the order they appear on the form
-                $ItemName = "ff";
-                $TotalOnHand = "ff";
-                $Department ="ff";
-                $adminEmail="nhallpot@uvm.edu";
+                $department = "";
+                $itemName = "";
+                $totalOnHand="";
+                
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
@@ -52,9 +85,9 @@ include 'top.php';
                 //
                 // Initialize Error Flags one for each form element we validate
                 // in the order they appear in section 1c.
-                $ItemNameError = false;
-                $TotalOnHandError = false;
-                $DepartmentError = false;
+                $departmentError = false;
+                $itemNameError = false;
+                $totalOnHandError = false;
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
@@ -85,16 +118,16 @@ include 'top.php';
                         $msg.= "Security breach detected and reported</p>";
                         die($msg);
                     }
- 
+
 
                 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 //
                 // SECTION: 2b Sanitize (clean) data
                 // remove any potential JavaScript or html code from users input on the
                 // form. Note it is best to follow the same order as declared in section 1c.
-                   $ItemName =filter_var($_POST["txtItemName"],FILTER_SANITIZE_STRING);
-                   $TotalOnHand =filter_var($_POST["txtTotalOnHand"],FILTER_SANITIZE_STRING);
-                   $Department = filter_var($_POST["txtDepartment"],FILTER_SANITIZE_STRING);
+                    $department = filter_var($_POST["txtDepartment"], FILTER_SANITIZE_STRING);
+                    $itemName = filter_var($_POST["txtItemName"], FILTER_SANITIZE_STRING);
+                    $totalOnHand = filter_var($_POST["txtTotalOnHand"], FILTER_SANITIZE_STRING);
 
                 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 //
@@ -108,18 +141,18 @@ include 'top.php';
                 // see section 3b. The error flag ($emailERROR) will be used in section 3c.
 
 
-                    if ($ItemName == "") {
-                        $errorMsg[] = "Please enter an Item Name";
-                        $ItemNameError = true;
+                    if ($department == "") {
+                        $errorMsg[] = "Please a department";
+                        $departmentError = true;
                     }
-                    if ($TotalOnHand ==""){
-                        $errorMsg[] = "Please enter a total number of units on hand";
-                        $TotalOnHandError = true;
-                    }
-                    if ($Department ==""){
-                        $errorMsg[] = "Please enter a department for the item";
-                        $DepartmentError = true;
-                    }
+                    if ($itemName == ""){
+                        $errorMsg[] = "Please enter an item name";
+                        $itemNameError = true;
+                    } 
+                    if ($totalOnHand == ""){
+                        $errorMsg[] = "Please enter the total on hand for the item";
+                        $totalOnHandError = true;
+                    } 
 
                 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 //
@@ -138,17 +171,16 @@ include 'top.php';
                         $dataEntered = false;
 
                         try {
-                            // Connect to the database
                             require_once('../bin/myDatabase.php');
-                            $dbUserName = (get_current_user() . '_writer');
+
+                            $dbUserName = get_current_user() . '_writer';
                             $whichPass = "w"; //flag for which one to use.
                             $dbName = strtoupper(get_current_user()) . '_Final_Project';
-                            $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);
-                            
+                            $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
                             $thisDatabase->db->beginTransaction();
-                            $query = 'INSERT INTO tblItem (fldItemName,fldTotalOnHand,fldDepartment) values ("?,?,?")';
-                            $data = array($ItemName,$TotalOnHand,$Department);
+                            $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand) values (?,?,?)';
 
+                            $data = array($department,$itemName,$totalOnHand);
                             if ($debug) {
                                 print "<p>sql " . $query;
                                 print"<p><pre>";
@@ -156,12 +188,8 @@ include 'top.php';
                                 print"</pre></p>";
                             }
                             $results = $thisDatabase->insert($query, $data);
-                            print "hello";
-                            
-                            print_r($results);
-                            print "hello";
-                            //if you have an auto increment key
-                            $primaryKey = $thisDatabase->lastInsertId();
+
+                            $primaryKey = $thisDatabase->lastInsert();
                             if ($debug)
                                 print "<p>pmk= " . $primaryKey;
 
@@ -186,8 +214,10 @@ include 'top.php';
                             $query = "SELECT fldDateJoined FROM tblRegister WHERE pmkRegisterId=" . $primaryKey;
                             $results = $thisDatabase->select($query);
 
+
                             $key2 = $primaryKey;
 
+                         
                             if ($debug)
                                 print "<p>key 2: " . $key2;
 
@@ -197,10 +227,10 @@ include 'top.php';
                             //Put forms information into a variable to print on the screen
                             //
 
-                            $messageA = '<h2>Thank you for registering.</h2>';
+                            $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
 
-                            $messageB = "<p>Click this link to confirm your registration: ";
-                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . '">Confirm Registration</a></p>';
+                            $messageB = "<p>Click this link to confirm an additon: ";
+                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . '">Confirm Addition</a></p>';
                             $messageB .= "<p>or copy and paste this url into a web browser: ";
                             $messageB .= $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . "</p>";
 
@@ -209,8 +239,12 @@ include 'top.php';
                             //##############################################################
                             //
                             // email the form's information
+               
                             //
-                            $to = $adminEmail; // the person who filled out the form
+                            // This email is the admin email
+                            $email="nhallpot@uvm.edu";
+                            
+                            $to = $email; // the person who filled out the form
                             $cc = "";
                             $bcc = "";
                             $from = "Inventory Management System";
@@ -242,14 +276,12 @@ include 'top.php';
                             print "not ";
                         }
                         print "been processed</h1>";
-                        print "<p>A copy of this message has ";
+                        print "<p>A copy of the request has ";
                         if (!$mailed) {
                             print "not ";
                         }
                         print "been sent</p>";
-                        print "<p>To: " . $email . "</p>";
-                        print "<p>Mail Message:</p>";
-                        print $messageA . $messageC;
+                        print "<p>to your System Administrator</p>";
                     } else {
                 //####################################
                 //
@@ -265,7 +297,6 @@ include 'top.php';
                             print "</ol>\n";
                             print '</div>';
                         }
-
                 //####################################
                 //
                 // SECTION 3c html Form
@@ -286,35 +317,33 @@ include 'top.php';
                               method="post"
                               id="frmRegister">
                             <fieldset class="wrapper">
-                <!--                <legend>Register Today</legend>
-                                <p></p>
-                                <fieldset class="wrapperTwo">-->
-                                    <legend>Please complete the following form</legend>
+                                <legend>Register Today</legend>
+                                <fieldset class="wrapperTwo">
+                                    <legend>Are you ready for CRUD?</legend>
                                     <fieldset class="contact">
                                         <legend>Contact Information</legend>
 
-                                        <label for="txtItemName" class="required">Item Name
-                                        <input type="text" id="txtItemName" name="txtItemName"
-                                               value="<?php print $ItemName; ?>"
-                                               tabindex="118" maxlength="45" placeholder="Enter an Item Name"
-                                               <?php if ($ItemNameError) print 'class="mistake"'; ?>
+                                        <label for="txtDepartment">Department
+                                        <input type="text" id="txtDepartment" name="txtDepartment"
+                                               value="<?php print $department; ?>"
+                                               tabindex="118" maxlength="25" placeholder="Enter the department"
+                                               <?php if ($departmentError) print 'class="mistake"'; ?>
                                                onfocus="this.select()"
                                                >
                                         </label>
-                                        <label for="txtTotalOnHand">Total on Hand
-                                            <input type="text" id="txtTotalOnHand" name="txtTotalOnHand"
-                                                   value="<?php print $TotalOnHand; ?>"
-                                                   tabindex="120" maxlength="3" placeholder="Enter the total of number of units on hand"
-                                                   <?php if ($TotalOnHandError) print 'class="mistake"'; ?>
+                                        <label for="txtItemName" >Item Name
+                                            <input type="text" id="txtItemName" name="txtItemName"
+                                                   value="<?php print $itemName; ?>"
+                                                   tabindex="120" maxlength="25" placeholder="Enter the Item's name"
+                                                   <?php if ($itemNameError) print 'class="mistake"'; ?>
                                                    onfocus="this.select()"
                                                    >
                                         </label>
-
-                                        <label for="txtDepartment">Department
-                                            <input type="text" id="txtDepartment" name="txtDepartment"
-                                                   value="<?php print $Department; ?>"
-                                                   tabindex="122" maxlength="45" placeholder="Enter the department the item belongs to"
-                                                   <?php if ($DepartmentError) print 'class="mistake"'; ?>
+                                        <label for="txtTotalOnHand" >Total On Hand
+                                            <input type="text" id="txtTotalOnHand" name="txtTotalOnHand"
+                                                   value="<?php print $totalOnHand; ?>"
+                                                   tabindex="122" maxlength="4" placeholder=""
+                                                   <?php if ($totalOnHandError) print 'class="mistake"'; ?>
                                                    onfocus="this.select()"
                                                    >
                                         </label>
@@ -334,18 +363,16 @@ include 'top.php';
 
 
                 <?php
-                include "footer.php";
                 if ($debug)
                     print "<p>END OF PROCESSING</p>";
                 ?>
-                </article>
 
-                                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                        <!-- /#page-content-wrapper -->
+                <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
 
 
 
