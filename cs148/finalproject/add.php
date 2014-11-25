@@ -230,9 +230,9 @@ include 'top.php';
                             $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
 
                             $messageB = "<p>Click this link to confirm an additon: ";
-                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . '">Confirm Addition</a></p>';
+                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . '">Confirm Addition</a></p>';
                             $messageB .= "<p>or copy and paste this url into a web browser: ";
-                            $messageB .= $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . "</p>";
+                            $messageB .= $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . "</p>";
 
                             $messageC .= "<p><b>Email Address:</b><i>   " . $email . "</i></p>";
 
