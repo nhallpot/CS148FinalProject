@@ -17,7 +17,6 @@ include 'top.php';
                     <h1>Welcome To Noah Hall-Potvin's</h1>
                     <h2>Inventory Management System</h2>
                     <!-- put text here -->
-                    // get the user who has logged in
                     <?php
                     $user = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
                     ?>

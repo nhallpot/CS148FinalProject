@@ -41,9 +41,9 @@ include 'top.php';
                 //
                 // SECTION: 1a.
                 // variables for the classroom purposes to help find errors.
-                $debug = true;
+                $debug = false;
                 if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
-                    $debug = true;
+                   $debug = true;
                 }
                 if ($debug)
                     print "<p>DEBUG MODE IS ON</p>";
@@ -69,29 +69,21 @@ include 'top.php';
 
                     $dbUserName = get_current_user() . '_writer';
                     $whichPass = "w"; //flag for which one to use.
-                    $dbName = strtoupper(get_current_user()) . '_UVM_Courses';
+                    $dbName = strtoupper(get_current_user()) . '_Final_Project';
                     $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
 
 
-                    $query = "SELECT fldDateJoined, fldEmail FROM tblRegister WHERE pmkRegisterId = ?";
+                    $query = "SELECT fldItemName,fldTotalOnHand,fldDepartment FROM tblItem WHERE pmkItemId = ?";
                     $data = array($key2);
                     //print_r($data);
                     //print_r($query);
 
                     $results = $thisDatabase->select($query, $data);
 
-                    $dateSubmitted = $results[0]["fldDateJoined"];
-                    $email = $results[0]["fldEmail"];
-
-                    $k1 = sha1($dateSubmitted);
-
                     if ($debug) {
-                        print "<p>Date: " . $dateSubmitted;
-                        print "<p>email: " . $email;
                         print "<p><pre>";
                         print_r($results);
                         print "</pre></p>";
-                        print "<p>k1: " . $k1;
                     }
                     //##############################################################
                         if ($debug)

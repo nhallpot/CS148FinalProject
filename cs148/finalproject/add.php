@@ -228,6 +228,7 @@ include 'top.php';
                             //
 
                             $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
+                            $messageD ='<h3>Item: </h3>'. $itemName .' <h3>Department:</h3>'. $department . ' <h3> Total On Hand:</h3>'. $totalOnHand;
 
                             $messageB = "<p>Click this link to confirm an additon: ";
                             $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . '">Confirm Addition</a></p>';
@@ -250,7 +251,7 @@ include 'top.php';
                             $from = "Inventory Management System";
                             $subject = "This is auto-generated, do NOT reply!";
 
-                            $mailed = sendMail($to, $cc, $bcc, $from, $subject, $messageA . $messageB . $messageC);
+                            $mailed = sendMail($to, $cc, $bcc, $from, $subject, $messageA . $messageD . $messageB . $messageC);
                         } //data entered  
                     } // end form is valid
                 } // ends if form was submitted.
