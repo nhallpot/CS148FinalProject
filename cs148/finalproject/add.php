@@ -283,6 +283,7 @@ include 'top.php';
                         }
                         print "been sent</p>";
                         print "<p>to your System Administrator</p>";
+                        print "<h6>*All items added are subject to approval of System Administrator*</h6>";
                     } else {
                 //####################################
                 //
@@ -320,10 +321,8 @@ include 'top.php';
                             <fieldset class="wrapper">
                                 <legend>Register Today</legend>
                                 <fieldset class="wrapperTwo">
-                                    <legend>Are you ready for CRUD?</legend>
+                                    <legend>Add an Inventory Item Here:</legend>
                                     <fieldset class="contact">
-                                        <legend>Contact Information</legend>
-
                                         <label for="txtDepartment">Department
                                         <input type="text" id="txtDepartment" name="txtDepartment"
                                                value="<?php print $department; ?>"
