@@ -41,9 +41,10 @@ include 'top.php';
                 //
                 // Initialize variables one for each form element
                 // in the order they appear on the form
-                $ItemName = "";
-                $TotalOnHand = "";
-                $Department ="";
+                $ItemName = "ff";
+                $TotalOnHand = "ff";
+                $Department ="ff";
+                $adminEmail="nhallpot@uvm.edu";
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
@@ -139,16 +140,15 @@ include 'top.php';
                         try {
                             // Connect to the database
                             require_once('../bin/myDatabase.php');
-
-                            $dbUserName = get_current_user() . '_writer';
+                            $dbUserName = (get_current_user() . '_writer');
                             $whichPass = "w"; //flag for which one to use.
                             $dbName = strtoupper(get_current_user()) . '_Final_Project';
                             $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);
-                            print($thisDatabase);
+                            
                             $thisDatabase->db->beginTransaction();
                             $query = 'INSERT INTO tblItem (fldItemName,fldTotalOnHand,fldDepartment) values ("?,?,?")';
-
                             $data = array($ItemName,$TotalOnHand,$Department);
+
                             if ($debug) {
                                 print "<p>sql " . $query;
                                 print"<p><pre>";
@@ -156,8 +156,12 @@ include 'top.php';
                                 print"</pre></p>";
                             }
                             $results = $thisDatabase->insert($query, $data);
-
-                            $primaryKey = $thisDatabase->lastInsert();
+                            print "hello";
+                            
+                            print_r($results);
+                            print "hello";
+                            //if you have an auto increment key
+                            $primaryKey = $thisDatabase->lastInsertId();
                             if ($debug)
                                 print "<p>pmk= " . $primaryKey;
 
@@ -182,13 +186,8 @@ include 'top.php';
                             $query = "SELECT fldDateJoined FROM tblRegister WHERE pmkRegisterId=" . $primaryKey;
                             $results = $thisDatabase->select($query);
 
-                            $dateSubmitted = $results[0]["fldDateJoined"];
-
-                            $key1 = sha1($dateSubmitted);
                             $key2 = $primaryKey;
 
-                            if ($debug)
-                                print "<p>key 1: " . $key1;
                             if ($debug)
                                 print "<p>key 2: " . $key2;
 
@@ -201,9 +200,9 @@ include 'top.php';
                             $messageA = '<h2>Thank you for registering.</h2>';
 
                             $messageB = "<p>Click this link to confirm your registration: ";
-                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?q=' . $key1 . '&amp;w=' . $key2 . '">Confirm Registration</a></p>';
+                            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . '">Confirm Registration</a></p>';
                             $messageB .= "<p>or copy and paste this url into a web browser: ";
-                            $messageB .= $domain . $path_parts["dirname"] . '/confirmation.php?q=' . $key1 . '&amp;w=' . $key2 . "</p>";
+                            $messageB .= $domain . $path_parts["dirname"] . '/confirmation.php?w=' . $key2 . "</p>";
 
                             $messageC .= "<p><b>Email Address:</b><i>   " . $email . "</i></p>";
 
@@ -211,7 +210,7 @@ include 'top.php';
                             //
                             // email the form's information
                             //
-                            $to = $email; // the person who filled out the form
+                            $to = $adminEmail; // the person who filled out the form
                             $cc = "";
                             $bcc = "";
                             $from = "Inventory Management System";
