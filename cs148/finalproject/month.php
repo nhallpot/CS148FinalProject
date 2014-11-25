@@ -1,5 +1,6 @@
 <?php
 include 'top.php';
+include 'jquery.php'
 ?>
 <div id="wrapper">
     <div id="sidebar-wrapper">
@@ -15,323 +16,239 @@ include 'top.php';
             <div class="row">
                 <div class="col-lg-12">
                     <h1>Begin Your Month Count</h1>
-                <?php
-// SECTION: 1 Initialize variables
-//
-// SECTION: 1a.
-// variables for the classroom purposes to help find errors.
-$debug = false;
-if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
-    $debug = false;
-}
-if ($debug)
-    print "<p>DEBUG MODE IS ON</p>";
-
-
-//%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-//
-// SECTION: 1b Security
-//
-// define security variable to be used in SECTION 2a.
-$yourURL = $domain . $phpSelf;
-
-//%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-//
-// SECTION: 1c form variables
-//
-// Initialize variables one for each form element
-// in the order they appear on the form
-$email = "nhallpot@uvm.edu";
-$screenName = "";
-
-//%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-//
-// SECTION: 1d form error flags
-//
-// Initialize Error Flags one for each form element we validate
-// in the order they appear in section 1c.
-$emailERROR = false;
-$screenNameError = false;
-
-//%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-//
-// SECTION: 1e misc variables
-//
-// create array to hold error messages filled (if any) in 2d displayed in 3c.
-$errorMsg = array();
-
-// used for building email message to be sent and displayed
-$mailed = false;
-$messageA = "";
-$messageB = "";
-$messageC = "";
-    
-
-
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//
-// SECTION: 2 Process for when the form is submitted
-//
-if (isset($_POST["btnSubmit"])) {
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//
-// SECTION: 2a Security
-//
-    if (!securityCheck(true)) {
-        $msg = "<p>Sorry you cannot access this page. ";
-        $msg.= "Security breach detected and reported</p>";
-        die($msg);
-    }
-
-
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//
-// SECTION: 2b Sanitize (clean) data
-// remove any potential JavaScript or html code from users input on the
-// form. Note it is best to follow the same order as declared in section 1c.
-    $email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
-    $screenName = filter_var($_POST["txtScreenName"],FILTER_SANITIZE_TEXT);
-
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//
-// SECTION: 2c Validation
-//
-// Validation section. Check each value for possible errors, empty or
-// not what we expect. You will need an IF block for each element you will
-// check (see above section 1c and 1d). The if blocks should also be in the
-// order that the elements appear on your form so that the error messages
-// will be in the order they appear. errorMsg will be displayed on the form
-// see section 3b. The error flag ($emailERROR) will be used in section 3c.
-
-
-    if ($email == "") {
-        $errorMsg[] = "Please enter your email address";
-        $emailERROR = true;
-    } elseif (!verifyEmail($email)) {
-        $errorMsg[] = "Your email address appears to be incorrect.";
-        $emailERROR = true;
-    }
-
-    if ($screenName ==""){
-        $errorMsg[] = "Please enter a username";
-        $screenNameError = true;
-    }
-
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//
-// SECTION: 2d Process Form - Passed Validation
-//
-// Process for when the form passes validation (the errorMsg array is empty)
-//
-    if (!$errorMsg) {
-        if ($debug)
-            print "<p>Form is valid</p>";
-
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //
-        // SECTION: 2e Save Data
-        //
-        $dataEntered = false;
-
-        try {
-            require_once('../bin/myDatabase.php');
-
-            $dbUserName = get_current_user() . '_writer';
-            $whichPass = "w"; //flag for which one to use.
-            $dbName = strtoupper(get_current_user()) . '_UVM_Courses';
-            $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
-            $thisDatabase->db->beginTransaction();
-            $query = 'INSERT INTO tblRegister (fldEmail,fldScreenName) values ("'.$email.','.$screenName.'")';
-
-            $data = array($email,$screenName);
-            if ($debug) {
-                print "<p>sql " . $query;
-                print"<p><pre>";
-                print_r($data);
-                print"</pre></p>";
-            }
-            $results = $thisDatabase->insert($query, $data);
-
-            $primaryKey = $thisDatabase->lastInsert();
-            if ($debug)
-                print "<p>pmk= " . $primaryKey;
-
-// all sql statements are done so lets commit to our changes
-            $dataEntered = $thisDatabase->db->commit();
-            $dataEntered = true;
-            if ($debug)
-                print "<p>transaction complete ";
-        } catch (PDOExecption $e) {
-            $thisDatabase->db->rollback();
-            if ($debug)
-                print "Error!: " . $e->getMessage() . "</br>";
-            $errorMsg[] = "There was a problem with accpeting your data please contact us directly.";
-        }
-        // If the transaction was successful, give success message
-        if ($dataEntered) {
-            if ($debug)
-                print "<p>data entered now prepare keys ";
-            //#################################################################
-            // create a key value for confirmation
-
-            $query = "SELECT fldDateJoined FROM tblRegister WHERE pmkRegisterId=" . $primaryKey;
-            $results = $thisDatabase->select($query);
-
-            $dateSubmitted = $results[0]["fldDateJoined"];
-
-            $key1 = sha1($dateSubmitted);
-            $key2 = $primaryKey;
-
-            if ($debug)
-                print "<p>key 1: " . $key1;
-            if ($debug)
-                print "<p>key 2: " . $key2;
-
-
-            //#################################################################
-            //
-            //Put forms information into a variable to print on the screen
-            //
-
-            $messageA = '<h2>Thank you for registering.</h2>';
-
-            $messageB = "<p>Click this link to confirm your registration: ";
-            $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmation.php?q=' . $key1 . '&amp;w=' . $key2 . '">Confirm Registration</a></p>';
-            $messageB .= "<p>or copy and paste this url into a web browser: ";
-            $messageB .= $domain . $path_parts["dirname"] . '/confirmation.php?q=' . $key1 . '&amp;w=' . $key2 . "</p>";
-
-            $messageC .= "<p><b>Email Address:</b><i>   " . $email . "</i></p>";
-
-            //##############################################################
-            //
-            // email the form's information
-            //
-            $to = $email; // the person who filled out the form
-            $cc = "";
-            $bcc = "";
-            $from = "Noah's 148 CRUD Assignment";
-            $subject = "This is auto-generated, do NOT reply!";
-
-            $mailed = sendMail($to, $cc, $bcc, $from, $subject, $messageA . $messageB . $messageC);
-        } //data entered  
-    } // end form is valid
-} // ends if form was submitted.
-//#############################################################################
-//
-// SECTION 3 Display Form
-//
-?>
-<article id="main">
-    <?php
-//####################################
-//
-// SECTION 3a.
-//
-//
-//
-//
-// If its the first time coming to the form or there are errors we are going
-// to display the form.
-    if (isset($_POST["btnSubmit"]) AND empty($errorMsg)) { // closing of if marked with: end body submit
-        print "<h1>Your Request has ";
-        if (!$mailed) {
-            print "not ";
-        }
-        print "been processed</h1>";
-        print "<p>A copy of this message has ";
-        if (!$mailed) {
-            print "not ";
-        }
-        print "been sent</p>";
-        print "<p>To: " . $email . "</p>";
-        print "<p>Mail Message:</p>";
-        print $messageA . $messageC;
-    } else {
-//####################################
-//
-// SECTION 3b Error Messages
-//
-// display any error messages before we print out the form
-        if ($errorMsg) {
-            print '<div id="errors">';
-            print "<ol>\n";
-            foreach ($errorMsg as $err) {
-                print "<li>" . $err . "</li>\n";
-            }
-            print "</ol>\n";
-            print '</div>';
-        }
-//####################################
-//
-// SECTION 3c html Form
-//
-        /* Display the HTML form. note that the action is to this same page. $phpSelf
-          is defined in top.php
-          NOTE the line:
-          value="<?php print $email; ?>
-          this makes the form sticky by displaying either the initial default value (line 35)
-          or the value they typed in (line 84)
-          NOTE this line:
-          <?php if($emailERROR) print 'class="mistake"'; ?>
-          this prints out a css class so that we can highlight the background etc. to
-          make it stand out that a mistake happened here.
-         */
-        ?>
-        <form action="<?php print $phpSelf; ?>"
-              method="post"
-              id="frmRegister">
-            <fieldset class="wrapper">
-                <legend>Register Today</legend>
-                <p>You will find Peace ...</p>
-                <fieldset class="wrapperTwo">
-                    <legend>Please complete the following form</legend>
-                    <fieldset class="contact">
-                        <legend>Contact Information</legend>
-
-                        <label for="txtScreenName" class="required">Screen Name
-                        <input type="text" id="txtScreenName" name="txtScreenName"
-                               value="<?php print $screenName; ?>"
-                               tabindex="118" maxlength="45" placeholder="Enter a screen name"
-                               <?php if ($screenNameError) print 'class="mistake"'; ?>
-                               onfocus="this.select()"
-                               >
-                        </label>
-                        <label for="txtEmail" class="required">Email
-                            <input type="text" id="txtEmail" name="txtEmail"
-                                   value="<?php print $email; ?>"
-                                   tabindex="120" maxlength="45" placeholder="Enter a valid email address"
-                                   <?php if ($emailERROR) print 'class="mistake"'; ?>
-                                   onfocus="this.select()"
-                                   >
-                        </label>
-                    </fieldset> <!-- ends contact -->
-                </fieldset> <!-- ends wrapper Two -->
-                <fieldset class="buttons">
-                    <legend></legend>
-                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Register" tabindex="900" class="button">
-                </fieldset> <!-- ends buttons -->
-            </fieldset> <!-- Ends Wrapper -->
-        </form>
-        <?php
-    } // end body submit
-    ?>
-</article>
-                    
                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+
+                <?php
+                // SECTION: 1 Initialize variables
+                //
+                // SECTION: 1a.
+                // variables for the classroom purposes to help find errors.
+                $debug = false;
+                if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
+                    $debug = false;
+                }
+                if ($debug)
+                    print "<p>DEBUG MODE IS ON</p>";
+                /**
+                * create your database object using the appropriate database username
+                */
+                require_once('../bin/myDatabase.php');
+
+                $dbUserName = get_current_user() . '_writer';
+                $whichPass = "w"; //flag for which one to use.
+                $dbName = strtoupper(get_current_user()) . '_Final_Project';
+
+                $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);
+                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
+                //
+                // SECTION: 1b Security
+                //
+                // define security variable to be used in SECTION 2a.
+                $yourURL = $domain . $phpSelf;
+
+                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
+                //
+                // SECTION: 1c form variables
+                //
+                // Initialize variables one for each form element
+                // in the order they appear on the form
+               $month = "";
+
+                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
+                //
+                // SECTION: 1d form error flags
+                //
+                // Initialize Error Flags one for each form element we validate
+                // in the order they appear in section 1c.
+               $monthError = false;
+
+                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
+                //
+                // SECTION: 1e misc variables
+                //
+                // create array to hold error messages filled (if any) in 2d displayed in 3c.
+                $errorMsg = array();
+
+                // used for building email message to be sent and displayed
+                $mailed = false;
+                $messageA = "";
+
+
+                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                //
+                // SECTION: 2 Process for when the form is submitted
+                //
+                if (isset($_POST["btnSubmit"])) {
+              
+                } // ends if form was submitted.
+                //#############################################################################
+                //
+                // SECTION 3 Display Form
+                //
+                ?>
+                <article id="main">
+                    <?php
+                //####################################
+                //
+                // SECTION 3a.
+                //
+                //
+                //
+                //
+                // If its the first time coming to the form or there are errors we are going
+                // to display the form.
+       
+                //####################################
+                //
+                // SECTION 3b Error Messages
+                //
+                // display any error messages before we print out the form
+                        if ($errorMsg) {
+                            print '<div id="errors">';
+                            print "<ol>\n";
+                            foreach ($errorMsg as $err) {
+                                print "<li>" . $err . "</li>\n";
+                            }
+                            print "</ol>\n";
+                            print '</div>';
+                        }
+                //####################################
+                //
+                // SECTION 3c html Form
+                //
+                        /* Display the HTML form. note that the action is to this same page. $phpSelf
+                          is defined in top.php
+                          NOTE the line:
+                          value="<?php print $email; ?>
+                          this makes the form sticky by displaying either the initial default value (line 35)
+                          or the value they typed in (line 84)
+                          NOTE this line:
+                          <?php if($emailERROR) print 'class="mistake"'; ?>
+                          this prints out a css class so that we can highlight the background etc. to
+                          make it stand out that a mistake happened here.
+                         */
+                
+                        ?>
+                        <form action="<?php print $phpSelf; ?>"
+                              method="post"
+                              id="frmRegister">
+                            <fieldset class="wrapper">
+                                <fieldset class="wrapperTwo">
+                                    <legend>This information will be passed on to the Inventory/System Administrator</legend>
+                                    <fieldset class="contact">
+
+                                        <label for="lstMonth">Month of Count
+                                        <select id="lstMonth"
+                                                name="lstMonth"
+                                                tabindex ="100">
+                                                <option selected value='January'>January</option>
+                                                <option selected value='February'>February</option>
+                                                <option selected value='March'>March</option>
+                                                <option selected value='April'>April</option>
+                                                <option selected value='May'>May</option>
+                                                <option selected value='June'>June</option>
+                                                <option selected value='July'>July</option>
+                                                <option selected value='August'>August</option>
+                                                <option selected value='September'>September</option>
+                                                <option selected value='October'>October</option>
+                                                <option selected value='November'>November</option>
+                                                <option selected value><?php print $month?></option>
+                                        </select>
+                                        </label>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        <label for="txtEmail" class="required">Email
+                                            <input type="text" id="txtEmail" name="txtEmail"
+                                                   value="<?php print $email; ?>"
+                                                   tabindex="800" maxlength="45" placeholder="Enter a valid email address"
+                                                   <?php if ($emailERROR) print 'class="mistake"'; ?>
+                                                   onfocus="this.select()"
+                                                   >
+                                        </label>
+                                    </fieldset> <!-- ends contact -->
+                                </fieldset> <!-- ends wrapper Two -->
+                                <fieldset class="buttons">
+                                    <legend></legend>
+                                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Register" tabindex="900" class="button">
+                                </fieldset> <!-- ends buttons -->
+                            </fieldset> <!-- Ends Wrapper -->
+                        </form>
+                        
+                </article>
+                    
+                <!-- pull info from tblItem -->
+                <?php
+                // print $thisDatabase;
+                        //Build query
+                $query = 'select fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department" ';
+                $query .= "FROM tblItem ";
+                $query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
+                //$query .= 'and fldDepartment like ? ';
+                $query .= 'order by pmkItemId';
+                //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");
+                $keys = array_keys($row);
+
+                ////        PUT CODE FROM Q01.PHP
+                /* ##### Step three
+                * Execute the query
+
+                *      */
+
+                $results = $thisDatabase->select($query);
+
+
+                /* ##### Step four
+                * prepare output and loop through array
+
+                *      */
+                $numberRecords = count($results);
+
+                print "<h2>Number of courses that meet your criteria: " . $numberRecords . "</h2>";
+
+
+                print "<table>";
+
+                $firstTime = true;
+
+                /* since it is associative array display the field names */
+                foreach ($results as $row) {
+                if ($firstTime) {
+                print "<thead><tr>";
+                $keys = array_keys($row);
+                foreach ($keys as $key) {
+                if (!is_int($key)) {
+                print "<th>" . $key . "</th>";
+                }
+                }
+                print "</tr>";
+                $firstTime = false;
+                }
+                }
+
+                /* display the data, the array is both associative and index so we are
+                *  skipping the index otherwise records are doubled up */
+                print "<tr>";
+                foreach ($row as $field => $value) {
+                if (!is_int($field)) {
+                print "<td>" . $value . "</td>";
+                }
+                }
+                print "</tr>";
+                print "</table>";
+                ?>
                 </div>
             </div>
         </div>
+        
+    
     </div>
         <!-- /#page-content-wrapper -->
     
     
 
-</div>    
-
-    <?php
-    include 'jquery.php';
-    ?>
-
-
+</div>  
     </body>
 </html>
