@@ -171,12 +171,7 @@ include 'top.php';
                         $dataEntered = false;
 
                         try {
-                            require_once('../bin/myDatabase.php');
-
-                            $dbUserName = get_current_user() . '_writer';
-                            $whichPass = "w"; //flag for which one to use.
-                            $dbName = strtoupper(get_current_user()) . '_Final_Project';
-                            $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);            
+                            include 'connectToDatabase.php';       
                             $thisDatabase->db->beginTransaction();
                             $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand) values (?,?,?)';
 
@@ -351,7 +346,7 @@ include 'top.php';
                                 </fieldset> <!-- ends wrapper Two -->
                                 <fieldset class="buttons">
                                     <legend></legend>
-                                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Register" tabindex="900" class="button">
+                                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Add Item" tabindex="900" class="button">
                                 </fieldset> <!-- ends buttons -->
                             </fieldset> <!-- Ends Wrapper -->
                         </form>

@@ -29,16 +29,7 @@ include 'top.php';
                 }
                 if ($debug)
                     print "<p>DEBUG MODE IS ON</p>";
-                /**
-                * create your database object using the appropriate database username
-                */
-                require_once('../bin/myDatabase.php');
-
-                $dbUserName = get_current_user() . '_writer';
-                $whichPass = "w"; //flag for which one to use.
-                $dbName = strtoupper(get_current_user()) . '_Final_Project';
-
-                $thisDatabase = new myDatabase($dbUserName, $whichPass, $dbName);
+                include 'connectToDatabase.php';
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
                 // SECTION: 1b Security
@@ -129,6 +120,65 @@ include 'top.php';
                          */
                 
                         ?>
+                      <!-- pull info from tblItem -->
+                <?php
+                // print $thisDatabase;
+                        //Build query
+                $query = 'select pmkItemId as "Item ID", fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department" ';
+                $query .= "FROM tblItem ";
+                $query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
+                //$query .= 'and fldDepartment like ? ';
+                $query .= 'order by pmkItemId';
+                //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");
+                $keys = array_keys($row);
+
+                ////        PUT CODE FROM Q01.PHP
+                /* ##### Step three
+                * Execute the query
+
+                *      */
+
+                $results = $thisDatabase->select($query);
+
+
+                /* ##### Step four
+                * prepare output and loop through array
+
+                *      */
+                print "<div id=itemTable>";
+                $numberRecords = count($results);
+
+                print "<table>";
+
+                $firstTime = true;
+
+    /* since it is associative array display the field names */
+                    foreach ($results as $row) {
+                        if ($firstTime) {
+                            print "<thead><tr>";
+                            $keys = array_keys($row);
+                            foreach ($keys as $key) {
+                                if (!is_int($key)) {
+                                    print "<th>" . $key . "</th>";
+                                }
+                            }
+                            print "</tr>";
+                            $firstTime = false;
+                        }
+
+                        /* display the data, the array is both associative and index so we are
+                         *  skipping the index otherwise records are doubled up */
+                        print "<tr>";
+                        foreach ($row as $field => $value) {
+                            if (!is_int($field)) {
+                                print "<td>" . $value . "</td>";
+                            }
+                        }
+                        print "</tr>";
+                    }
+                    print "</table>";
+                    print "</div>";
+                    ?>
                         <form action="<?php print $phpSelf; ?>"
                               method="post"
                               id="frmRegister">
@@ -179,68 +229,7 @@ include 'top.php';
                         
                 </article>
                     
-                <!-- pull info from tblItem -->
-                <?php
-                // print $thisDatabase;
-                        //Build query
-                $query = 'select fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department" ';
-                $query .= "FROM tblItem ";
-                $query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
-                //$query .= 'and fldDepartment like ? ';
-                $query .= 'order by pmkItemId';
-                //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");
-                $keys = array_keys($row);
-
-                ////        PUT CODE FROM Q01.PHP
-                /* ##### Step three
-                * Execute the query
-
-                *      */
-
-                $results = $thisDatabase->select($query);
-
-
-                /* ##### Step four
-                * prepare output and loop through array
-
-                *      */
-                print "<div id=itemTable>";
-                $numberRecords = count($results);
-
-                print "<h2>Number of courses that meet your criteria: " . $numberRecords . "</h2>";
-
-
-                print "<table>";
-
-                $firstTime = true;
-
-    /* since it is associative array display the field names */
-                    foreach ($results as $row) {
-                        if ($firstTime) {
-                            print "<thead><tr>";
-                            $keys = array_keys($row);
-                            foreach ($keys as $key) {
-                                if (!is_int($key)) {
-                                    print "<th>" . $key . "</th>";
-                                }
-                            }
-                            print "</tr>";
-                            $firstTime = false;
-                        }
-
-                        /* display the data, the array is both associative and index so we are
-                         *  skipping the index otherwise records are doubled up */
-                        print "<tr>";
-                        foreach ($row as $field => $value) {
-                            if (!is_int($field)) {
-                                print "<td>" . $value . "</td>";
-                            }
-                        }
-                        print "</tr>";
-                    }
-                    print "</table>";
-                    print "</div>";
-                    ?>
+              
                 </div>
             </div>
         </div>
