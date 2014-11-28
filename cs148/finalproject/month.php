@@ -44,6 +44,7 @@ include 'top.php';
                 // Initialize variables one for each form element
                 // in the order they appear on the form
                $month = "";
+               $update = false;
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //

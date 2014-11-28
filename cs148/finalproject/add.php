@@ -50,7 +50,7 @@ include 'top.php';
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
                 // SECTION: 1 Initialize variables
-                //
+                $update = false;
                 // SECTION: 1a.
                 // variables for the classroom purposes to help find errors.
                 $debug = false;
@@ -77,6 +77,7 @@ include 'top.php';
                 $department = "";
                 $itemName = "";
                 $totalOnHand="";
+                $monthCounted="";
                 
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
@@ -88,6 +89,7 @@ include 'top.php';
                 $departmentError = false;
                 $itemNameError = false;
                 $totalOnHandError = false;
+                $monthCountedError = false;
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //
@@ -128,6 +130,7 @@ include 'top.php';
                     $department = filter_var($_POST["txtDepartment"], FILTER_SANITIZE_STRING);
                     $itemName = filter_var($_POST["txtItemName"], FILTER_SANITIZE_STRING);
                     $totalOnHand = filter_var($_POST["txtTotalOnHand"], FILTER_SANITIZE_STRING);
+                    $monthCounted = $_POST["lstMonth"];
 
                 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 //
@@ -152,7 +155,11 @@ include 'top.php';
                     if ($totalOnHand == ""){
                         $errorMsg[] = "Please enter the total on hand for the item";
                         $totalOnHandError = true;
-                    } 
+                    }
+                    if ($monthCounted == ""){
+                        $errorMsg[] = "Please select a month that this item will be counted";
+                        $monthCountedError = true;
+                    }
 
                 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                 //
@@ -173,9 +180,9 @@ include 'top.php';
                         try {
                             include 'connectToDatabase.php';       
                             $thisDatabase->db->beginTransaction();
-                            $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand) values (?,?,?)';
+                            $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount) values (?,?,?,?)';
 
-                            $data = array($department,$itemName,$totalOnHand);
+                            $data = array($department,$itemName,$totalOnHand,$monthCounted);
                             if ($debug) {
                                 print "<p>sql " . $query;
                                 print"<p><pre>";
@@ -223,7 +230,7 @@ include 'top.php';
                             //
 
                             $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
-                            $messageD ='<h3>Item: </h3>'. $itemName .' <h3>Department:</h3>'. $department . ' <h3> Total On Hand:</h3>'. $totalOnHand;
+                            $messageD ='<h3>Item: </h3>'. $itemName .' <h3>Department:</h3>'. $department . ' <h3> Total On Hand:</h3>'. $totalOnHand . ' <h3> Month to be Counted:</h3>'. $monthCounted;
 
                             $messageB = "<p>Click this link to confirm an additon: ";
                             $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . '">Confirm Addition</a></p>';
@@ -341,6 +348,24 @@ include 'top.php';
                                                    <?php if ($totalOnHandError) print 'class="mistake"'; ?>
                                                    onfocus="this.select()"
                                                    >
+                                        </label>
+                                        <label for="lstMonth">Month Item Will Be Counted
+                                        <select id="lstMonth"
+                                                name="lstMonth"
+                                                tabindex ="124">
+                                                <option selected value='January'>January</option>
+                                                <option selected value='February'>February</option>
+                                                <option selected value='March'>March</option>
+                                                <option selected value='April'>April</option>
+                                                <option selected value='May'>May</option>
+                                                <option selected value='June'>June</option>
+                                                <option selected value='July'>July</option>
+                                                <option selected value='August'>August</option>
+                                                <option selected value='September'>September</option>
+                                                <option selected value='October'>October</option>
+                                                <option selected value='November'>November</option>
+                                                <option selected value><?php print $month?></option>
+                                        </select>
                                         </label>
                                     </fieldset> <!-- ends contact -->
                                 </fieldset> <!-- ends wrapper Two -->
