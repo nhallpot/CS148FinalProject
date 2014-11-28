@@ -1,6 +1,5 @@
 <?php
 include 'top.php';
-include 'jquery.php'
 ?>
 <div id="wrapper">
     <div id="sidebar-wrapper">
@@ -19,6 +18,7 @@ include 'jquery.php'
                     <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
 
                 <?php
+                include 'jquery.php';// this is for front end stuff
                 // SECTION: 1 Initialize variables
                 //
                 // SECTION: 1a.
