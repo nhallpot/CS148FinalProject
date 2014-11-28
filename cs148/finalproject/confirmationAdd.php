@@ -99,55 +99,11 @@ include 'top.php';
                             print_r($data);
                             print "</pre></p>";
                         }
-                //        // notify admin
-                //        $message = '<h2>The following Registration has been confirmed:</h2>';
-                //
-                //        $message = "<p>Click this link to approve this registration: ";
-                //        $message .= '<a href="' . $domain . $path_parts["dirname"] . '/approve.php?q=' . $key2 . '">Approve Registration</a></p>';
-                //        $message .= "<p>or copy and paste this url into a web browser: ";
-                //        $message .= $path_parts["dirname"] . '/approve.php?q=' . $key2 . "</p>";
-
-                        if ($debug)
-                            print "<p>" . $message;
-
-                        $to = $adminEmail;
-                        $cc = "";
-                        $bcc = "";
-                        $from = "WRONG site <noreply@yoursite.com>";
-                        $subject = "New PLH Camp Membership Confirmed: Approve?";
-
-                        $mailed = sendMail($to, $cc, $bcc, $from, $subject, $message);
-
-                        if ($debug) {
-                            print "<p>";
-                            if (!$mailed) {
-                                print "NOT ";
-                            }
-                            print "mailed to admin ". $to . ".</p>";
-                        }
-
-                //        // notify user
-                //        $to = $email;
-                //        $cc = "";
-                //        $bcc = "";
-                //        $from = "WRONG site <noreply@yoursite.com>";
-                //        $subject = "Bobs PLH Registration Confirmed";
-                //        $message = "<p>Thank you for taking the time to confirm your registration. Once your membership has been approved we look forward to sending you junk mail. Grader please mark me wrong for not changing this.</p>";
-
-                //        $mailed = sendMail($to, $cc, $bcc, $from, $subject, $message);
-
-                //        print $message;
-                //        if ($debug) {
-                //            print "<p>";
-                //            if (!$mailed) {
-                //                print "NOT ";
-                //            }
-                //            print "mailed to member: " . $to . ".</p>";
-                //        }
-                //    }else{
-                //        print $message;
-                //    }
+     
                 } // ends isset get q
+                if($debug){
+                    print "end of php";
+                }
                 ?>
                 </div>
 
