@@ -125,7 +125,7 @@ include 'top.php';
                 <?php
                 // print $thisDatabase;
                         //Build query
-                $query = 'select pmkItemId as "Item ID", fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department" ';
+                $query = 'select pmkItemId as "Item ID", fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department",fnkItemMonthCount as "Month To Be Counted" ';
                 $query .= "FROM tblItem ";
                 $query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
                 //$query .= 'and fldDepartment like ? ';

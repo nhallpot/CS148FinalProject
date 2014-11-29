@@ -79,7 +79,7 @@ include 'connectToDatabase.php';
                     if (isset($_GET["id"])) {
                         $pmkItemId = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8");
 
-                        $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand,fldItemMonthCount ';
+                        $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand,fnkItemMonthCount ';
                         $query .= 'FROM tblItem WHERE pmkItemId = ?';
 
                         $results = $thisDatabase->select($query, array($pmkItemId));
@@ -87,7 +87,7 @@ include 'connectToDatabase.php';
                         $department = $results[0]["fldDepartment"];
                         $itemName = $results[0]["fldItemName"];
                         $totalOnHand = $results[0]["fldTotalOnHand"];
-                        $monthCounted = $results[0]["fldItemMonthCount"];
+                        $monthCounted = $results[0]["fnkItemMonthCount"];
                     } else {
                         $pmkItemId = -1;
                         $department = "";
@@ -213,9 +213,9 @@ include 'connectToDatabase.php';
                                     $query .= 'fldDepartment = "?", ';
                                     $query .= 'fldItemName = "?", ';
                                     $query .= 'fldTotalOnHand = ?, ';
-                                    $query .= 'fldItemMonthCount = "?" ';
+                                    $query .= 'fnkItemMonthCount = "?" ';
                                 } else {
-                                    $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount) values (?,?,?,?) ';
+                                    $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fnkItemMonthCount) values (?,?,?,?) ';
                                 }
 
                                 if ($update) {
@@ -224,10 +224,10 @@ include 'connectToDatabase.php';
                                     if($debug)
                                     {
                                         print_r($data);
-                                        print "<p> . $query .</p>";
+                                        print "<p> query: $query .</p>";
                                     }
-
                                     $results = $thisDatabase->update($query, $data);
+                                    
                                 } else {
                                     $results = $thisDatabase->insert($query, $data);
 
@@ -254,7 +254,7 @@ include 'connectToDatabase.php';
                                 //#################################################################
                                 // create a key value for confirmation
 
-                                $query = "SELECT fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount FROM tblItem WHERE pmkItemId=" . $primaryKey;
+                                $query = "SELECT fldDepartment,fldItemName,fldTotalOnHand,fnkItemMonthCount FROM tblItem WHERE pmkItemId=" . $primaryKey;
                                 $results = $thisDatabase->select($query);
                                 $key2 = $primaryKey;
 
@@ -411,7 +411,7 @@ include 'connectToDatabase.php';
                                                     <option selected value='September'>September</option>
                                                     <option selected value='October'>October</option>
                                                     <option selected value='November'>November</option>
-                                                    <option selected value><?php print $month ?></option>
+                                                    <option selected value><?php print $monthCounted ?></option>
                                                 </select>
                                             </label>
                                         </fieldset> <!-- ends contact -->

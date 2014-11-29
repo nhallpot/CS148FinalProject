@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Assignment 6.0</title>
+        <title>Inventory Management</title>
         <meta charset="utf-8">
         <meta name="author" content="Noah Hall-Potvin">
         <meta name="description" content="A php app that performs inventory counts">

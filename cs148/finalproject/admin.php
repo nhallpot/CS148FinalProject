@@ -30,7 +30,7 @@ include 'connectToDatabase.php';
 // prepare the sql statement
                     $orderBy = "ORDER BY fldItemName";
 
-                    $query = "SELECT pmkItemId, fldDepartment, fldItemName, fldTotalOnHand,fldItemMonthCount ";
+                    $query = "SELECT pmkItemId, fldDepartment, fldItemName, fldTotalOnHand,fnkItemMonthCount ";
                     $query .= "FROM tblItem " . $orderBy;
 
                     if ($debug)
@@ -53,8 +53,9 @@ include 'connectToDatabase.php';
                         print "<li>";
                         if ($admin) {
                             print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Edit]</a> ';
-                        }
-                        print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fldItemMonthCount'] . "</li>\n";
+                            print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Delete]</a> ';
+                            }
+                        print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fnkItemMonthCount'] . "</li>\n";
                     }
                     print "</ol>\n";
                     print "</article>";
