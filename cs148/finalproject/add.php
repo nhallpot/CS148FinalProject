@@ -60,6 +60,7 @@ include 'connectToDatabase.php';
                     }
                     if ($debug)
                         print "<p>DEBUG MODE IS ON</p>";
+                        
 
 
                     //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
@@ -157,8 +158,7 @@ include 'connectToDatabase.php';
                         $data [] = $totalOnHand;
                         $monthCounted = $_POST["lstMonth"];
                         $data [] = $monthCounted;
-
-
+                        
 
                         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         //
@@ -210,10 +210,10 @@ include 'connectToDatabase.php';
 
                                 if ($update) {
                                     $query = 'UPDATE tblItem SET ';
-                                    $query .= 'fldDepartment = ?, ';
-                                    $query .= 'fldItemName = ?, ';
-                                    $query .= 'fldTotalOnHand = ? ';
-                                    $query .= 'fldItemMonthCount = ? ';
+                                    $query .= 'fldDepartment = "?", ';
+                                    $query .= 'fldItemName = "?", ';
+                                    $query .= 'fldTotalOnHand = ?, ';
+                                    $query .= 'fldItemMonthCount = "?" ';
                                 } else {
                                     $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount) values (?,?,?,?) ';
                                 }
@@ -221,6 +221,11 @@ include 'connectToDatabase.php';
                                 if ($update) {
                                     $query .= 'WHERE pmkItemId = ?';
                                     $data[] = $pmkItemId;
+                                    if($debug)
+                                    {
+                                        print_r($data);
+                                        print "<p> . $query .</p>";
+                                    }
 
                                     $results = $thisDatabase->update($query, $data);
                                 } else {
