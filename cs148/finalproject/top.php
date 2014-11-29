@@ -79,7 +79,7 @@
 
         require_once('lib/security.php');
 
-        if ($path_parts['filename'] == "month"||$path_parts['filename'] == "year"||$path_parts['filename'] == "admin"||$path_parts['filename'] == "contact"||$path_parts['filename'] == "add") {
+        if ($path_parts['filename'] == "month"||$path_parts['filename'] == "year"||$path_parts['filename'] == "count"||$path_parts['filename'] == "contact"||$path_parts['filename'] == "add") {
             include "lib/validation-functions.php";
             include "lib/mail-message.php";
         }

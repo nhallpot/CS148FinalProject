@@ -25,7 +25,7 @@ include 'connectToDatabase.php';
                     //
                     // SECTION: 1a.
                     // variables for the classroom purposes to help find errors.
-                    $debug = false;
+                    $debug = true;
                     if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
                         $debug = true;
                     }
@@ -108,9 +108,54 @@ include 'connectToDatabase.php';
                             //
                             // SECTION: 2e Save Data
                             // This is where we will print the table matching the correct items
-                            
-                           
-                            //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                            //Build query
+                            $query = 'select pmkItemId as "Item ID", fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department",fnkItemMonthCount as "Month To Be Counted" ';
+                            $query .= "FROM tblItem ";
+                            $query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admin
+                            $query .= 'and fnkItemMonthCount like ? ';
+                            $query .= 'order by pmkItemId';
+                            $data = array($month ."%");
+                            $keys = array_keys($row);
+
+                            print "<div id=itemTable>";
+                            $numberRecords = count($results);
+
+                            $results = $thisDatabase->select($query,$data);
+
+
+                            print "<table>";
+
+                            $firstTime = true;
+
+                            /* since it is associative array display the field names */
+                            foreach ($results as $row) {
+                                if ($firstTime) {
+                                    print "<thead><tr>";
+                                    $keys = array_keys($row);
+                                    foreach ($keys as $key) {
+                                        if (!is_int($key)) {
+                                            print "<th>" . $key . "</th>";
+                                        }
+                                    }
+                                    print "</tr>";
+                                    $firstTime = false;
+                                }
+
+                                /* display the data, the array is both associative and index so we are
+                                 *  skipping the index otherwise records are doubled up */
+                                print "<tr>";
+                                foreach ($row as $field => $value) {
+                                    if (!is_int($field)) {
+                                        print "<td>" . $value . "</td>";
+                                    }
+                                }
+                                print "</tr>";
+                            }
+                            print "</table>";
+                            print $month;
+                            print "</div>";
+
+                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                             //
                             // SECTION: 2f Create message
                             

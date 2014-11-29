@@ -79,21 +79,26 @@ include 'connectToDatabase.php';
                     if (isset($_GET["id"])) {
                         $pmkItemId = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8");
 
-                        $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand,fnkItemMonthCount ';
-                        $query .= 'FROM tblItem WHERE pmkItemId = ?';
+                        $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
+                        $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId';
 
                         $results = $thisDatabase->select($query, array($pmkItemId));
 
                         $department = $results[0]["fldDepartment"];
                         $itemName = $results[0]["fldItemName"];
                         $totalOnHand = $results[0]["fldTotalOnHand"];
-                        $monthCounted = $results[0]["fnkItemMonthCount"];
+                        $sector = $results[0]["fldSector"];
+                        $column = $results[0]["fldColumn"];
+                        $rowLocation = $results[0]["fldRow"];
+
                     } else {
                         $pmkItemId = -1;
                         $department = "";
                         $itemName = "";
                         $totalOnHand = "";
-                        $monthCounted = "";
+                        $sector="";
+                        $column="";
+                        $rowLocation="";
                     }
 
 
@@ -106,7 +111,9 @@ include 'connectToDatabase.php';
                     $departmentError = false;
                     $itemNameError = false;
                     $totalOnHandError = false;
-                    $monthCountedError = false;
+                    $sectorError = false;
+                    $columnError = false;
+                    $rowLocationError = false;
 
                     //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     //
@@ -115,6 +122,7 @@ include 'connectToDatabase.php';
                 // create array to hold error messages filled (if any) in 2d displayed in 3c.
                     $errorMsg = array();
                     $data = array();
+                    $data2 = array();
                     $dataEntered = false;
 
                     // used for building email message to be sent and displayed
@@ -156,9 +164,12 @@ include 'connectToDatabase.php';
                         $data [] = $itemName;
                         $totalOnHand = filter_var($_POST["txtTotalOnHand"], FILTER_SANITIZE_STRING);
                         $data [] = $totalOnHand;
-                        $monthCounted = $_POST["lstMonth"];
-                        $data [] = $monthCounted;
-                        
+                        $sector = $_POST["lstSector"];
+                        $data2 [] = $sector;
+                        $column = $_POST["lstColumn"];
+                        $data2 [] = $column;
+                        $rowLocation = $_POST["lstRow"];
+                        $data2 [] = $rowLocation;
 
                         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         //
@@ -184,10 +195,19 @@ include 'connectToDatabase.php';
                             $errorMsg[] = "Please enter the total on hand for the item";
                             $totalOnHandError = true;
                         }
-                        if ($monthCounted == "") {
-                            $errorMsg[] = "Please select a month that this item will be counted";
-                            $monthCountedError = true;
+                        if ($sector == "") {
+                            $errorMsg[] = "Please enter the sector";
+                            $sectorError = true;
                         }
+                        if ($column == "") {
+                            $errorMsg[] = "Please enter the column location";
+                            $columnError = true;
+                        }
+                        if ($rowLocation == "") {
+                            $errorMsg[] = "Please enter the row location";
+                            $rowLocationError = true;
+                        }
+                        
 
                         //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         //
@@ -212,10 +232,10 @@ include 'connectToDatabase.php';
                                     $query = 'UPDATE tblItem SET ';
                                     $query .= 'fldDepartment = "?", ';
                                     $query .= 'fldItemName = "?", ';
-                                    $query .= 'fldTotalOnHand = ?, ';
-                                    $query .= 'fnkItemMonthCount = "?" ';
+                                    $query .= 'fldTotalOnHand = ? ';
                                 } else {
-                                    $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fnkItemMonthCount) values (?,?,?,?) ';
+                                    $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand) values (?,?,?) ';
+                                    $query2 = 'INSERT INTO tblLocation (fldSector,fldColumn,fldRow) VALUES (?,?,?)';
                                 }
 
                                 if ($update) {
@@ -230,6 +250,7 @@ include 'connectToDatabase.php';
                                     
                                 } else {
                                     $results = $thisDatabase->insert($query, $data);
+                                    $results2 = $thisDatabase->insert($query2, $data2);
 
                                     $primaryKey = $thisDatabase->lastInsert();
                                     if ($debug) {
@@ -261,7 +282,8 @@ include 'connectToDatabase.php';
                                 //#################################################################
                                 // create a key value for confirmation
 
-                                $query = "SELECT fldDepartment,fldItemName,fldTotalOnHand,fnkItemMonthCount FROM tblItem WHERE pmkItemId=" . $primaryKey;
+                                $query = "SELECT fldDepartment,fldItemName,fldTotalOnHand FROM tblItem WHERE pmkItemId=" . $primaryKey;
+                                
                                 $results = $thisDatabase->select($query);
                                 $key2 = $primaryKey;
 
@@ -276,7 +298,7 @@ include 'connectToDatabase.php';
                                 //
 
                             $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
-                                $messageD = '<h3>Item: </h3>' . $itemName . ' <h3>Department:</h3>' . $department . ' <h3> Total On Hand:</h3>' . $totalOnHand . ' <h3> Month to be Counted:</h3>' . $monthCounted;
+                                $messageD = '<h3>Item: </h3>' . $itemName . ' <h3>Department:</h3>' . $department . ' <h3> Total On Hand:</h3>' . $totalOnHand . '';
 
                                 $messageB = "<p>Click this link to confirm an additon: ";
                                 $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . '">Confirm Addition</a></p>';
@@ -403,24 +425,40 @@ include 'connectToDatabase.php';
                                                        onfocus="this.select()"
                                                        >
                                             </label>
-                                            <label for="lstMonth">Month Item Will Be Counted
-                                                <select id="lstMonth"
-                                                        name="lstMonth"
+                                            <label for="lstSector">Sector Location
+                                                <select id="lstSector"
+                                                        name="lstSector"
                                                         tabindex ="124">
-                                                    <option selected value='January'>January</option>
-                                                    <option selected value='February'>February</option>
-                                                    <option selected value='March'>March</option>
-                                                    <option selected value='April'>April</option>
-                                                    <option selected value='May'>May</option>
-                                                    <option selected value='June'>June</option>
-                                                    <option selected value='July'>July</option>
-                                                    <option selected value='August'>August</option>
-                                                    <option selected value='September'>September</option>
-                                                    <option selected value='October'>October</option>
-                                                    <option selected value='November'>November</option>
-                                                    <option selected value><?php print $monthCounted ?></option>
+                                                    <option selected value=1>1</option>
+                                                    <option selected value=2>2</option>
+                                                    <option selected value=3>3</option>
+                                                    <option selected value=4>4</option>
+                                                    <option selected value><?php print $sector ?></option>
                                                 </select>
                                             </label>
+                                            <label for="lstColumn">Column Location
+                                                <select id="lstColumn"
+                                                        name="lstColumn"
+                                                        tabindex ="126">
+                                                    <option selected value=1>1</option>
+                                                    <option selected value=2>2</option>
+                                                    <option selected value=3>3</option>
+                                                    <option selected value=4>4</option>
+                                                    <option selected value><?php print $column ?></option>
+                                                </select>
+                                            </label>
+                                            <label for="lstRow">Row Location
+                                                <select id="lstRow"
+                                                        name="lstRow"
+                                                        tabindex ="128">
+                                                    <option selected value=1>1</option>
+                                                    <option selected value=2>2</option>
+                                                    <option selected value=3>3</option>
+                                                    <option selected value=4>4</option>
+                                                    <option selected value><?php print $rowLocation ?></option>
+                                                </select>
+                                            </label>                                            
+                                            
                                         </fieldset> <!-- ends contact -->
                                     </fieldset> <!-- ends wrapper Two -->
                                     <fieldset class="buttons">
