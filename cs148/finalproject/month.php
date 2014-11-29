@@ -19,108 +19,8 @@ include 'top.php';
 
                 <?php
                 include 'jquery.php';// this is for front end stuff
-                // SECTION: 1 Initialize variables
-                //
-                // SECTION: 1a.
-                // variables for the classroom purposes to help find errors.
-                $debug = false;
-                if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
-                    $debug = false;
-                }
-                if ($debug)
-                    print "<p>DEBUG MODE IS ON</p>";
-                include 'connectToDatabase.php';
-                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-                //
-                // SECTION: 1b Security
-                //
-                // define security variable to be used in SECTION 2a.
-                $yourURL = $domain . $phpSelf;
 
-                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-                //
-                // SECTION: 1c form variables
-                //
-                // Initialize variables one for each form element
-                // in the order they appear on the form
-               $month = "";
-               $update = false;
-
-                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-                //
-                // SECTION: 1d form error flags
-                //
-                // Initialize Error Flags one for each form element we validate
-                // in the order they appear in section 1c.
-               $monthError = false;
-
-                //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
-                //
-                // SECTION: 1e misc variables
-                //
-                // create array to hold error messages filled (if any) in 2d displayed in 3c.
-                $errorMsg = array();
-
-                // used for building email message to be sent and displayed
-                $mailed = false;
-                $messageA = "";
-
-
-                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                //
-                // SECTION: 2 Process for when the form is submitted
-                //
-                if (isset($_POST["btnSubmit"])) {
-              
-                } // ends if form was submitted.
-                //#############################################################################
-                //
-                // SECTION 3 Display Form
-                //
                 ?>
-                <article id="main">
-                    <?php
-                //####################################
-                //
-                // SECTION 3a.
-                //
-                //
-                //
-                //
-                // If its the first time coming to the form or there are errors we are going
-                // to display the form.
-       
-                //####################################
-                //
-                // SECTION 3b Error Messages
-                //
-                // display any error messages before we print out the form
-                        if ($errorMsg) {
-                            print '<div id="errors">';
-                            print "<ol>\n";
-                            foreach ($errorMsg as $err) {
-                                print "<li>" . $err . "</li>\n";
-                            }
-                            print "</ol>\n";
-                            print '</div>';
-                        }
-                //####################################
-                //
-                // SECTION 3c html Form
-                //
-                        /* Display the HTML form. note that the action is to this same page. $phpSelf
-                          is defined in top.php
-                          NOTE the line:
-                          value="<?php print $email; ?>
-                          this makes the form sticky by displaying either the initial default value (line 35)
-                          or the value they typed in (line 84)
-                          NOTE this line:
-                          <?php if($emailERROR) print 'class="mistake"'; ?>
-                          this prints out a css class so that we can highlight the background etc. to
-                          make it stand out that a mistake happened here.
-                         */
-                
-                        ?>
                       <!-- pull info from tblItem -->
                 <?php
                 // print $thisDatabase;
@@ -146,39 +46,7 @@ include 'top.php';
                 * prepare output and loop through array
 
                 *      */
-                print "<div id=itemTable>";
-                $numberRecords = count($results);
 
-                print "<table>";
-
-                $firstTime = true;
-
-    /* since it is associative array display the field names */
-                    foreach ($results as $row) {
-                        if ($firstTime) {
-                            print "<thead><tr>";
-                            $keys = array_keys($row);
-                            foreach ($keys as $key) {
-                                if (!is_int($key)) {
-                                    print "<th>" . $key . "</th>";
-                                }
-                            }
-                            print "</tr>";
-                            $firstTime = false;
-                        }
-
-                        /* display the data, the array is both associative and index so we are
-                         *  skipping the index otherwise records are doubled up */
-                        print "<tr>";
-                        foreach ($row as $field => $value) {
-                            if (!is_int($field)) {
-                                print "<td>" . $value . "</td>";
-                            }
-                        }
-                        print "</tr>";
-                    }
-                    print "</table>";
-                    print "</div>";
                     ?>
                         <form action="<?php print $phpSelf; ?>"
                               method="post"
@@ -189,27 +57,30 @@ include 'top.php';
                                     <fieldset class="contact">
 
                                         <label for="btnMonth">Month of Count
-                                        <select id="btnMonth"
-                                                name="btnMonth"
-                                        <input type="radio" name="sex" value="January" checked>January
-                                        <input type="radio" name="sex" value="February" checked>February
-                                        <input type="radio" name="sex" value="March" checked>March
-                                        <input type="radio" name="sex" value="April" checked>April
-                                        <input type="radio" name="sex" value="May" checked>May
-                                        <input type="radio" name="sex" value="June" checked>June
-                                        <input type="radio" name="sex" value="July" checked>July
-                                        <input type="radio" name="sex" value="August" checked>August
-                                        <input type="radio" name="sex" value="September" checked>September
-                                        <input type="radio" name="sex" value="October" checked>October
-                                        <input type="radio" name="sex" value="November" checked>November
+                                        
+                                        <input id='radJanuary' type="radio" name="radMonth" value="January" >January
+                                        <input id='radFebruary' type="radio" name="radMonth" value="February" >February
+                                        <input id='radMarch' type="radio" name="radMonth" value="March" >March
+                                        <input id='radApril' type="radio" name="radMonth" value="April" >April
+                                        <input id='radMay' type="radio" name="radMonth" value="May" >May
+                                        <input id='radJune' type="radio" name="radMonth" value="June" >June
+                                        <input id='radJuly' type="radio" name="radMonth" value="July" >July
+                                        <input id='radAugust' type="radio" name="radMonth" value="August" >August
+                                        <input id='radSeptember' type="radio" name="radMonth" value="September" >September
+                                        <input id='radOctober' type="radio" name="radMonth" value="October" >October
+                                        <input id='radNovember' type="radio" name="radMonth" value="November" >November
+                                        
                                         </select>
                                         </label>
                                     
                                     </fieldset> <!-- ends contact -->
+                                    
                                 </fieldset> <!-- ends wrapper Two -->
+                                
                                 <fieldset class="buttons">
-                                    <legend></legend>
-                                    <input type="submit" id="btnSubmit" name="btnSubmit" value="Register" tabindex="900" class="button">
+                                                                       
+                                    <input type="submit" id="btnDisplayInventory" name="btnDisplayInventory" value="Display Inventory" tabindex="900" class="button">
+                                    
                                 </fieldset> <!-- ends buttons -->
                             </fieldset> <!-- Ends Wrapper -->
                         </form>
