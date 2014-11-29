@@ -24,14 +24,15 @@ include 'connectToDatabase.php';
                      */
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     $admin = true;
+                    $debug = true;
 
                     print "<article>";
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
 // prepare the sql statement
-                    $orderBy = "ORDER BY fldItemName";
+                    $orderBy = "ORDER BY pmkItemId";
 
-                    $query = "SELECT pmkItemId, fldDepartment, fldItemName, fldTotalOnHand,fnkItemMonthCount ";
-                    $query .= "FROM tblItem " . $orderBy;
+                     $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
+                     $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId ' .$orderBy;
 
                     if ($debug)
                         print "<p>sql " . $query;
@@ -55,7 +56,7 @@ include 'connectToDatabase.php';
                             print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Edit]</a> ';
                             print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Delete]</a> ';
                             }
-                        print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fnkItemMonthCount'] . "</li>\n";
+                        print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fldSector'] . " " . $item['fldColumn'] . " " . $item['fldRow'] . "</li>\n";
                     }
                     print "</ol>\n";
                     print "</article>";

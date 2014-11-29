@@ -11,10 +11,10 @@
                     <a href="add.php">Add Item to Inventory</a>
                 </li>
                 <li>
-                    <a href="month.php">Month Count</a>
+                    <a href="viewItems.php">View Items in Inventory</a>
                 </li>
                 <li>
-                    <a href="year.php">Year Count</a>
+                    <a href="viewLocations.php">View Locations of Items</a>
                 </li>
                 <li>
                     <a href="admin.php">Admin</a>
