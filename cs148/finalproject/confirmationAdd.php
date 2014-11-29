@@ -104,6 +104,7 @@ include 'top.php';
                 if($debug){
                     print "end of php";
                 }
+                print "<p> You have approved a new record into the database.</p>";
                 ?>
                 </div>
 

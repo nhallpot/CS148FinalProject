@@ -113,6 +113,8 @@ include 'connectToDatabase.php';
                     //
                 // create array to hold error messages filled (if any) in 2d displayed in 3c.
                     $errorMsg = array();
+                    $data = array();
+                    $dataEntered = false;
 
                     // used for building email message to be sent and displayed
                     $mailed = false;
@@ -199,47 +201,35 @@ include 'connectToDatabase.php';
 
                             //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                             //
-                        // SECTION: 2e Save Data
-                            //
-                        $dataEntered = false;
+// SECTION: 2e Save Data
+//
 
+                            $dataEntered = false;
                             try {
                                 $thisDatabase->db->beginTransaction();
 
                                 if ($update) {
                                     $query = 'UPDATE tblItem SET ';
+                                    $query .= 'fldDepartment = ?, ';
+                                    $query .= 'fldItemName = ?, ';
+                                    $query .= 'fldTotalOnHand = ? ';
+                                    $query .= 'fldItemMonthCount = ? ';
                                 } else {
-                                    $query = 'INSERT INTO tblItem SET ';
+                                    $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount) values (?,?,?,?) ';
                                 }
-
-                                $query .= 'fldDepartment = ?, ';
-                                $query .= 'fldItemName = ?, ';
-                                $query .= 'fldTotalOnHand = ? ';
-                                $query .= 'fldItemMonthCounted = ? ';
 
                                 if ($update) {
                                     $query .= 'WHERE pmkItemId = ?';
                                     $data[] = $pmkItemId;
-                                    if ($debug) {
-                                        print "<p>sql " . $query . "<p><pre>";
-                                        print_r($data);
-                                        //die();
-                                    }
+
                                     $results = $thisDatabase->update($query, $data);
                                 } else {
-
-                                    if ($debug) {
-                                        print "<p>sql " . $query;
-                                        print"<p><pre>";
-                                        print_r($data);
-                                        print"</pre></p>";
-                                    }
                                     $results = $thisDatabase->insert($query, $data);
 
                                     $primaryKey = $thisDatabase->lastInsert();
-
-                                    if ($debug)
+                                    if ($debug) {
                                         print "<p>pmk= " . $primaryKey;
+                                    }
                                 }
                                 // all sql statements are done so lets commit to our changes
                                 $dataEntered = $thisDatabase->db->commit();
@@ -259,21 +249,15 @@ include 'connectToDatabase.php';
                                 //#################################################################
                                 // create a key value for confirmation
 
-                                $query = "SELECT fldDateJoined FROM tblRegister WHERE pmkRegisterId=" . $primaryKey;
+                                $query = "SELECT fldDepartment,fldItemName,fldTotalOnHand,fldItemMonthCount FROM tblItem WHERE pmkItemId=" . $primaryKey;
                                 $results = $thisDatabase->select($query);
+                                $key2 = $primaryKey;
 
-                                if($update)
-                                {
-                                    $key2 = $pmkItemId;
-                                }else{
-                              
-                                    $key2 = $primaryKey;
-                                }
 
                                 if ($debug)
                                     print "<p>key 2: " . $key2;
 
-                            
+
                                 //#################################################################
                                 //
                             //Put forms information into a variable to print on the screen
@@ -301,9 +285,8 @@ include 'connectToDatabase.php';
                                 $bcc = "";
                                 $from = "Inventory Management System";
                                 $subject = "This is auto-generated, do NOT reply!";
-                                
-                                if(!$update)
-                                {
+
+                                if (!$update) {
                                     $mailed = sendMail($to, $cc, $bcc, $from, $subject, $messageA . $messageD . $messageB . $messageC);
                                 }
                             } //data entered  
@@ -325,22 +308,21 @@ include 'connectToDatabase.php';
                 //
                 // If its the first time coming to the form or there are errors we are going
                         // to display the form
-                        
+
                         if (isset($_POST["btnSubmit"]) AND empty($errorMsg)) { // closing of if marked with: end body submit
-                            if(!$update)
-                            {
-                            print "<h1>Your Request has ";
-                            if (!$mailed) {
-                                print "not ";
-                            }
-                            print "been processed</h1>";
-                            print "<p>A copy of the request has ";
-                            if (!$mailed) {
-                                print "not ";
-                            }
-                            print "been sent</p>";
-                            print "<p>to your System Administrator</p>";
-                            print "<h6>*All items added are subject to approval of System Administrator*</h6>";
+                            if (!$update) {
+                                print "<h1>Your Request has ";
+                                if (!$mailed) {
+                                    print "not ";
+                                }
+                                print "been processed</h1>";
+                                print "<p>A copy of the request has ";
+                                if (!$mailed) {
+                                    print "not ";
+                                }
+                                print "been sent</p>";
+                                print "<p>to your System Administrator</p>";
+                                print "<h6>*All items added are subject to approval of System Administrator*</h6>";
                             }
                         } else {
                             //####################################
