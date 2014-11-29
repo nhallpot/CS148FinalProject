@@ -182,43 +182,29 @@ include 'top.php';
                     ?>
                         <form action="<?php print $phpSelf; ?>"
                               method="post"
-                              id="frmRegister">
+                              id="frmSelectMonth">
                             <fieldset class="wrapper">
                                 <fieldset class="wrapperTwo">
-                                    <legend>This information will be passed on to the Inventory/System Administrator</legend>
+                                    <legend>Select the Month of Your Count</legend>
                                     <fieldset class="contact">
 
-                                        <label for="lstMonth">Month of Count
-                                        <select id="lstMonth"
-                                                name="lstMonth"
-                                                tabindex ="100">
-                                                <option selected value='January'>January</option>
-                                                <option selected value='February'>February</option>
-                                                <option selected value='March'>March</option>
-                                                <option selected value='April'>April</option>
-                                                <option selected value='May'>May</option>
-                                                <option selected value='June'>June</option>
-                                                <option selected value='July'>July</option>
-                                                <option selected value='August'>August</option>
-                                                <option selected value='September'>September</option>
-                                                <option selected value='October'>October</option>
-                                                <option selected value='November'>November</option>
-                                                <option selected value><?php print $month?></option>
+                                        <label for="btnMonth">Month of Count
+                                        <select id="btnMonth"
+                                                name="btnMonth"
+                                        <input type="radio" name="sex" value="January" checked>January
+                                        <input type="radio" name="sex" value="February" checked>February
+                                        <input type="radio" name="sex" value="March" checked>March
+                                        <input type="radio" name="sex" value="April" checked>April
+                                        <input type="radio" name="sex" value="May" checked>May
+                                        <input type="radio" name="sex" value="June" checked>June
+                                        <input type="radio" name="sex" value="July" checked>July
+                                        <input type="radio" name="sex" value="August" checked>August
+                                        <input type="radio" name="sex" value="September" checked>September
+                                        <input type="radio" name="sex" value="October" checked>October
+                                        <input type="radio" name="sex" value="November" checked>November
                                         </select>
                                         </label>
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        <label for="txtEmail" class="required">Email
-                                            <input type="text" id="txtEmail" name="txtEmail"
-                                                   value="<?php print $email; ?>"
-                                                   tabindex="800" maxlength="45" placeholder="Enter a valid email address"
-                                                   <?php if ($emailERROR) print 'class="mistake"'; ?>
-                                                   onfocus="this.select()"
-                                                   >
-                                        </label>
+                                    
                                     </fieldset> <!-- ends contact -->
                                 </fieldset> <!-- ends wrapper Two -->
                                 <fieldset class="buttons">

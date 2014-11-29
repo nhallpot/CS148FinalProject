@@ -207,7 +207,7 @@ include 'connectToDatabase.php';
                             $dataEntered = false;
                             try {
                                 $thisDatabase->db->beginTransaction();
-
+                                
                                 if ($update) {
                                     $query = 'UPDATE tblItem SET ';
                                     $query .= 'fldDepartment = "?", ';
@@ -238,13 +238,20 @@ include 'connectToDatabase.php';
                                 }
                                 // all sql statements are done so lets commit to our changes
                                 $dataEntered = $thisDatabase->db->commit();
-
+                                
+                                if($dataEntered)
+                                    print "data has been committed";
                                 if ($debug)
                                     print "<p>transaction complete ";
+                                
+                                
                             } catch (PDOExecption $e) {
+                                
                                 $thisDatabase->db->rollback();
+                                
                                 if ($debug)
                                     print "Error!: " . $e->getMessage() . "</br>";
+                                
                                 $errorMsg[] = "There was a problem with accpeting your data please contact your System Admin directly.";
                             }
                             // If the transaction was successful, give success message
