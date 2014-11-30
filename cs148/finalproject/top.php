@@ -11,7 +11,7 @@
         <!--[if lt IE 9]>
         <script src="//html5shim.googlecode.com/sin/trunk/html5.js"></script>
         <![endif]-->
-        <link rel="stylesheet" href="custom.css" type="text/css" media="screen">        
+        <link rel="stylesheet" href="custom.css" type="text/css" media="screen">    
         <link rel="stylesheet" href="bootstrap.css" type="text/css" media="screen">
         <link rel="stylesheet" href="bootstrap.min.css" type="text/css" media="screen">
         <link rel="stylesheet" href="simple-sidebar.css" type="text/css" media="screen">
