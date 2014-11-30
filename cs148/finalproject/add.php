@@ -78,7 +78,6 @@ include 'connectToDatabase.php';
                     // in the order they appear on the form
                     if (isset($_GET["id"])) {
                         $pmkItemId = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8");
-
                         $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
                         $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId';
 
@@ -158,11 +157,19 @@ include 'connectToDatabase.php';
                         if ($pmkItemId > 0) {
                             $update = true;
                         }
+                        if($debug)
+                            print "pmk".$pmkItemId;
+                        if ($pmkItemId > 0)
+                        {
+                            $update = true;
+                        }
+                        if($update)
+                            print "updating";
                         $department = filter_var($_POST["txtDepartment"], FILTER_SANITIZE_STRING);
                         $data [] = $department;
                         $itemName = filter_var($_POST["txtItemName"], FILTER_SANITIZE_STRING);
                         $data [] = $itemName;
-                        $totalOnHand = filter_var($_POST["txtTotalOnHand"], FILTER_SANITIZE_STRING);
+                        $totalOnHand = filter_var($_POST["txtTotalOnHand"], FILTER_SANITIZE_NUMBER_INT);
                         $data [] = $totalOnHand;
                         $sector = $_POST["lstSector"];
                         $data2 [] = $sector;
@@ -230,9 +237,15 @@ include 'connectToDatabase.php';
                                 
                                 if ($update) {
                                     $query = 'UPDATE tblItem SET ';
-                                    $query .= 'fldDepartment = "?", ';
-                                    $query .= 'fldItemName = "?", ';
+                                    $query .= 'fldDepartment = ?, ';
+                                    $query .= 'fldItemName = ?, ';
                                     $query .= 'fldTotalOnHand = ? ';
+                                    
+                                    $query2 = 'UPDATE tblLocation SET ';
+                                    $query2 .= 'fldSector = ?, ';
+                                    $query2 .= 'fldColumn = ?, ';
+                                    $query2 .= 'fldRow = ? ';
+                                    
                                 } else {
                                     $query = 'INSERT INTO tblItem (fldDepartment,fldItemName,fldTotalOnHand) values (?,?,?) ';
                                     $query2 = 'INSERT INTO tblLocation (fldSector,fldColumn,fldRow) VALUES (?,?,?)';
@@ -240,14 +253,19 @@ include 'connectToDatabase.php';
 
                                 if ($update) {
                                     $query .= 'WHERE pmkItemId = ?';
+                                    $query2.= 'WHERE fnkItemId = ?';
                                     $data[] = $pmkItemId;
+                                    $data2[] = $pmkItemId;
                                     if($debug)
                                     {
                                         print_r($data);
                                         print "<p> query: $query .</p>";
+                                        print_r($data2);
+                                        print "<p> query: $query2 .</p>";
                                     }
                                     $results = $thisDatabase->update($query, $data);
-                                    
+                                    $results2 = $thisDatabase->update($query2, $data2);
+
                                 } else {
                                     $results = $thisDatabase->insert($query, $data);
                                     $results2 = $thisDatabase->insert($query2, $data2);
@@ -286,6 +304,8 @@ include 'connectToDatabase.php';
                                 
                                 $results = $thisDatabase->select($query);
                                 $key2 = $primaryKey;
+                                if($update)
+                                    $key2 = $pmkItemId;
 
 
                                 if ($debug)

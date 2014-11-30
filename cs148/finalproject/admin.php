@@ -31,7 +31,7 @@ include 'connectToDatabase.php';
 // prepare the sql statement
                     $orderBy = "ORDER BY pmkItemId";
 
-                     $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
+                     $query = 'SELECT pmkItemId, fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
                      $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId ' .$orderBy;
 
                     if ($debug)
@@ -54,7 +54,7 @@ include 'connectToDatabase.php';
                         print "<li>";
                         if ($admin) {
                             print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Edit]</a> ';
-                            print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Delete]</a> ';
+                            print '<a href="delete.php?id=' . $item["pmkItemId"] . '">[Delete]</a> ';
                             }
                         print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fldSector'] . " " . $item['fldColumn'] . " " . $item['fldRow'] . "</li>\n";
                     }
