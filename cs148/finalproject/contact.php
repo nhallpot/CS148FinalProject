@@ -21,7 +21,7 @@ include 'connectToDatabase.php';
 // Initialize variables
 //  Here we set the default values that we want our form to display
 
-                    $debug = true;
+                    $debug = false;
 
                     if (isset($_GET["debug"])) { // this just helps me out if you have it
                         $debug = true;
