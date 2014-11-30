@@ -458,7 +458,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value=<?php print $sector ?>></option>
+                                                    <option selected value=<?php print $sector ?>><?php print $sector ?></option>
                                                 </select>
                                             </label>
                                             <label for="lstColumn">Column Location
@@ -469,7 +469,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value=<?php print $column ?>></option>
+                                                    <option selected value=<?php print $column ?>><?php print $column ?></option>
                                                 </select>
                                             </label>
                                             <label for="lstRow">Row Location
@@ -480,7 +480,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value=<?php print $rowLocation?>></option>
+                                                    <option selected value=<?php print $rowLocation?>><?php print $rowLocation?></option>
                                                 </select>
                                             </label>                                            
                                             
