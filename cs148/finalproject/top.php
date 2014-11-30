@@ -4,7 +4,7 @@
         <title>Inventory Management</title>
         <meta charset="utf-8">
         <meta name="author" content="Noah Hall-Potvin">
-        <meta name="description" content="A php app that performs inventory counts">
+        <meta name="description" content="A php app that tracks inventory">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
