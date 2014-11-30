@@ -22,9 +22,11 @@ include 'connectToDatabase.php';
                      * Written By: Robert Erickson robert.erickson@uvm.edu
                      * Last updated on: November 20, 2014
                      */
+                    print "<h1> This page contains all actions that a System Admin will need. </h1>";
+                    print "<h2> Questions? Feel free to submit a contact form and get in touch with the webmaster, Noah Hall-Potvin.</h2>";
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     $admin = true;
-                    $debug = true;
+                    $debug = false;
 
                     print "<article>";
 // %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%

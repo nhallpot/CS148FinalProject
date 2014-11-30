@@ -18,6 +18,8 @@ include 'connectToDatabase.php';
                     <?php
                     //* %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     // * the purpose of this page is to display a list of poets sorted 
+                    print "<h1> Here are all of the locations approved by the System Admin. </h1>";
+                    print "<h2> If you don't see your item's location, it is because the System Admin hasn't approved it yet. </h2>";
                     //Build query
                     $query = 'select fnkItemId as "Item ID", fldSector as "Sector",fldColumn as "Column",fldRow as "Row" ';
                     $query .= "FROM tblLocation ";
@@ -26,7 +28,6 @@ include 'connectToDatabase.php';
                     $query .= 'order by fnkItemId';
                     //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");
                     $keys = array_keys($row);
-                    print "Query: ".$query;
                     print "<div id=itemTable>";
                     $numberRecords = count($results);
 

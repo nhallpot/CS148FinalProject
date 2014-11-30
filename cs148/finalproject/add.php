@@ -54,7 +54,7 @@ include 'connectToDatabase.php';
                     $update = false;
                     // SECTION: 1a.
                     // variables for the classroom purposes to help find errors.
-                    $debug = true;
+                    $debug = false;
                     if (isset($_GET["debug"])) { // ONLY do this in a classroom environment
                         $debug = false;
                     }
@@ -89,6 +89,7 @@ include 'connectToDatabase.php';
                         $sector = $results[0]["fldSector"];
                         $column = $results[0]["fldColumn"];
                         $rowLocation = $results[0]["fldRow"];
+                        $addOrUpdate = "Update Item";
 
                     } else {
                         $pmkItemId = -1;
@@ -98,8 +99,9 @@ include 'connectToDatabase.php';
                         $sector="";
                         $column="";
                         $rowLocation="";
-                    }
+                        $addOrUpdate = "Add Item";
 
+                    }
 
 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     //
@@ -413,7 +415,6 @@ include 'connectToDatabase.php';
                                   method="post"
                                   id="frmRegister">
                                 <fieldset class="wrapper">
-                                    <legend>Register Today</legend>
                                     <fieldset class="wrapperTwo">
                                         <legend>Add an Inventory Item Here:</legend>
 
@@ -483,7 +484,7 @@ include 'connectToDatabase.php';
                                     </fieldset> <!-- ends wrapper Two -->
                                     <fieldset class="buttons">
                                         <legend></legend>
-                                        <input type="submit" id="btnSubmit" name="btnSubmit" value="Add Item" tabindex="900" class="button">
+                                        <input type="submit" id="btnSubmit" name="btnSubmit" value="<?php print $addOrUpdate;?>" tabindex="900" class="button">
                                     </fieldset> <!-- ends buttons -->
                                 </fieldset> <!-- Ends Wrapper -->
                             </form>

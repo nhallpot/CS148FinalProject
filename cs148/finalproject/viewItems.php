@@ -18,6 +18,9 @@ include 'connectToDatabase.php';
                     <?php
                     //* %^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                     // * the purpose of this page is to display a list of poets sorted 
+                    print "<h1> Here are all of the items approved by the System Admin. </h1>";
+                    print "<h2> If you don't see your item, it is because the System Admin hasn't approved it yet. </h2>";
+                    
                     //Build query
                     $query = 'select pmkItemId as "Item ID", fldItemName as "Item Name",fldTotalOnHand as "Total On Hand",fldDepartment as "Department" ';
                     $query .= "FROM tblItem ";
@@ -26,7 +29,6 @@ include 'connectToDatabase.php';
                     $query .= 'order by pmkItemId';
                     //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");
                     $keys = array_keys($row);
-                    print "Query: ".$query;
                     print "<div id=itemTable>";
                     $numberRecords = count($results);
 
