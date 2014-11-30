@@ -33,7 +33,7 @@ include 'top.php';
 
                 print '<article id="main">';
 
-                print '<h1>Registration Confirmation</h1>';
+                print '<h1>Addition Confirmation</h1>';
 
                 //%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%^%
                 //

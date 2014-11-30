@@ -77,10 +77,10 @@ include 'connectToDatabase.php';
                     //
                 // Initialize variables one for each form element
                     // in the order they appear on the form
-                    if (isset($_GET["id"])) {
-                        $pmkItemId = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8");
+                    if (isset($_GET["w"])){
+                        $pmkItemId = htmlentities($_GET["w"], ENT_QUOTES, "UTF-8");
                         $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
-                        $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId';
+                        $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId and pmkItemId = ?';
 
                         $results = $thisDatabase->select($query, array($pmkItemId));
 
@@ -90,15 +90,30 @@ include 'connectToDatabase.php';
                         $sector = $results[0]["fldSector"];
                         $column = $results[0]["fldColumn"];
                         $rowLocation = $results[0]["fldRow"];
+                    }
+                    else{
+                        if (isset($_GET["id"])) {
+                            $pmkItemId = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8");
+                            $query = 'SELECT fldDepartment, fldItemName, fldTotalOnHand, fldSector, fldColumn, fldRow ';
+                            $query .= 'FROM tblItem,tblLocation WHERE pmkItemId = fnkItemId and pmkItemId = ?';
 
-                    } 
+                            $results = $thisDatabase->select($query, array($pmkItemId));
 
+                            $department = $results[0]["fldDepartment"];
+                            $itemName = $results[0]["fldItemName"];
+                            $totalOnHand = $results[0]["fldTotalOnHand"];
+                            $sector = $results[0]["fldSector"];
+                            $column = $results[0]["fldColumn"];
+                            $rowLocation = $results[0]["fldRow"];
+
+                        } 
+                    }
                 $data = array($pmkItemId);
                 $keys = array_keys($row);                
                 if ($debug)
                 {
-                    print_r($data);
-                    print "Query" . $query;
+                    print_r($data); 
+                   print "Query" . $query;
                 }
 		print "<div id=itemTable>";
                 $numberRecords = count($results);

@@ -58,7 +58,7 @@ include 'connectToDatabase.php';
                             print '<a href="add.php?id=' . $item["pmkItemId"] . '">[Edit]</a> ';
                             print '<a href="delete.php?id=' . $item["pmkItemId"] . '">[Delete]</a> ';
                             }
-                        print $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fldSector'] . " " . $item['fldColumn'] . " " . $item['fldRow'] . "</li>\n";
+                        print $item['pmkItemId']. " " . $item['fldDepartment'] . " " . $item['fldItemName'] . " " . $item['fldTotalOnHand'] . " " . $item['fldSector'] . " " . $item['fldColumn'] . " " . $item['fldRow'] . "</li>\n";
                     }
                     print "</ol>\n";
                     print "</article>";

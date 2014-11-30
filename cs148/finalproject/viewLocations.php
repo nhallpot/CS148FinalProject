@@ -21,9 +21,10 @@ include 'connectToDatabase.php';
                     print "<h1> Here are all of the locations approved by the System Admin. </h1>";
                     print "<h2> If you don't see your item's location, it is because the System Admin hasn't approved it yet. </h2>";
                     //Build query
-                    $query = 'select fnkItemId as "Item ID", fldSector as "Sector",fldColumn as "Column",fldRow as "Row" ';
-                    $query .= "FROM tblLocation ";
-                    //$query .= 'WHERE fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
+                    $query = 'select fnkItemId as "Item ID", fldItemName as "Item Name", fldSector as "Sector",fldColumn as "Column",fldRow as "Row" ';
+                    $query .= "FROM tblItem,tblLocation ";
+                    $query .="WHERE pmkItemId = fnkItemId ";
+                    $query .= 'and tblItem.fldApproved=1 '; // We just want to show the items that have been confirmed by an admint
                     //$query .= 'and fldDepartment like ? ';
                     $query .= 'order by fnkItemId';
                     //$data = array($subject ."%",$number ."%",$building ."%",$startTime ."%",$typeOfClass ."%",$professor ."%");

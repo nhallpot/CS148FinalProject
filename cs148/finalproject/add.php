@@ -165,8 +165,7 @@ include 'connectToDatabase.php';
                         {
                             $update = true;
                         }
-                        if($update)
-                            print "updating";
+                        
                         $department = filter_var($_POST["txtDepartment"], FILTER_SANITIZE_STRING);
                         $data [] = $department;
                         $itemName = filter_var($_POST["txtItemName"], FILTER_SANITIZE_STRING);
@@ -280,8 +279,7 @@ include 'connectToDatabase.php';
                                 // all sql statements are done so lets commit to our changes
                                 $dataEntered = $thisDatabase->db->commit();
                                 
-                                if($dataEntered)
-                                    print "data has been committed";
+                                
                                 if ($debug)
                                     print "<p>transaction complete ";
                                 
@@ -320,14 +318,17 @@ include 'connectToDatabase.php';
                                 //
 
                             $messageA = '<h2>Someone has tried to add an item to the inventory:.</h2>';
-                                $messageD = '<h3>Item: </h3>' . $itemName . ' <h3>Department:</h3>' . $department . ' <h3> Total On Hand:</h3>' . $totalOnHand . '';
+                                $messageD = '<h3>Item: </h3>' . $itemName . ' <h3>Department:</h3>' . $department . ' <h3> Total On Hand:</h3>' . $totalOnHand . '<h3>Sector: </h3>' . $sector . ' <h3>Column:</h3>' . $column . ' <h3> Row:</h3>' . $rowLocation . '';
 
-                                $messageB = "<p>Click this link to confirm an additon: ";
+                                $messageB = "<p>Click this link to <b>confirm</b> an additon: ";
                                 $messageB .= '<a href="' . $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . '">Confirm Addition</a></p>';
                                 $messageB .= "<p>or copy and paste this url into a web browser: ";
                                 $messageB .= $domain . $path_parts["dirname"] . '/confirmationAdd.php?w=' . $key2 . "</p>";
 
-                                $messageC .= "<p><b>Email Address:</b><i>   " . $email . "</i></p>";
+                                $messageC = "<p>Click this link to <b>delete</b> this additon: ";
+                                $messageC .= '<a href="' . $domain . $path_parts["dirname"] . '/delete.php?w=' . $key2 . '">Delete Addition</a></p>';
+                                $messageC .= "<p>or copy and paste this url into a web browser: ";
+                                $messageC .= $domain . $path_parts["dirname"] . '/delete.php?w=' . $key2 . "</p>";
 
                                 //##############################################################
                                 //
@@ -379,6 +380,9 @@ include 'connectToDatabase.php';
                                 print "been sent</p>";
                                 print "<p>to your System Administrator</p>";
                                 print "<h6>*All items added are subject to approval of System Administrator*</h6>";
+                            }
+                            else{
+                                print "<h2> The Item has been edited </h2>";
                             }
                         } else {
                             //####################################
@@ -454,7 +458,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value><?php print $sector ?></option>
+                                                    <option selected value=<?php print $sector ?>></option>
                                                 </select>
                                             </label>
                                             <label for="lstColumn">Column Location
@@ -465,7 +469,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value><?php print $column ?></option>
+                                                    <option selected value=<?php print $column ?>></option>
                                                 </select>
                                             </label>
                                             <label for="lstRow">Row Location
@@ -476,7 +480,7 @@ include 'connectToDatabase.php';
                                                     <option selected value=2>2</option>
                                                     <option selected value=3>3</option>
                                                     <option selected value=4>4</option>
-                                                    <option selected value><?php print $rowLocation ?></option>
+                                                    <option selected value=<?php print $rowLocation?>></option>
                                                 </select>
                                             </label>                                            
                                             
